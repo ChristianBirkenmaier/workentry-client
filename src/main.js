@@ -1,8 +1,13 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const axios = require("axios");
-// const { db, message } = require("../db")();
+const regeneratorRuntime = require("regenerator-runtime");
+const { db, message } = require("../db")();
 const { Workentry, Category, Project } = require("../models");
+
+const CATEGORY_URL = "http://localhost:8080/api/v1/category/";
+const PROJECT_URL = "http://localhost:8080/api/v1/project/";
+const WORKENTRY_URL = "http://localhost:8080/api/v1/workentry";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -10,9 +15,11 @@ if (require("electron-squirrel-startup")) {
     app.quit();
 }
 
+let mainWindow;
+
 const createWindow = () => {
     // Create the browser window.
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
         webPreferences: {
@@ -26,6 +33,8 @@ const createWindow = () => {
 
     // Open the DevTools.
     mainWindow.webContents.openDevTools();
+
+    handleListeners();
 };
 
 // This method will be called when Electron has finished
@@ -50,5 +59,128 @@ app.on("activate", () => {
     }
 });
 
+function handleListeners() {
+    ipcMain.on("message:req", () => {
+        console.log("Message: ", message);
+        mainWindow.webContents.send("message:res", message);
+    });
+
+    ipcMain.on("workentries:load", sendWorkentries);
+
+    ipcMain.on("workentrycreate:load", sendWorkentrycreate);
+
+    ipcMain.on("categories:load", loadCategories);
+    ipcMain.on("projects:load", loadProjects);
+    ipcMain.on("workentrycreate:new", sendNewWorkentry);
+}
+
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+async function loadCategories() {
+    try {
+        console.log("loadCategories");
+        let categories;
+        // categories = await Category.find();
+        if (!categories) {
+            categories = [
+                { _id: "0123", categoryName: "Bli" },
+                { _id: "2345", categoryName: "Bla" },
+            ];
+        }
+        console.log("categories", categories);
+        mainWindow.webContents.send(
+            "categories:get",
+            JSON.stringify(categories)
+        );
+    } catch (err) {
+        console.error(err);
+        mainWindow.webContents.send("message:res", [err.message]);
+    }
+}
+
+async function loadProjects() {
+    try {
+        console.log("loadProjects");
+        let projects;
+        // projects = await Project.find();
+        if (!projects) {
+            projects = [
+                { _id: "12521", projectName: "kjsafsaf" },
+                { _id: "dasd2", projectName: "asfsaf" },
+            ];
+        }
+        console.log("projects", projects);
+        mainWindow.webContents.send("projects:get", JSON.stringify(projects));
+    } catch (err) {
+        console.error(err);
+        mainWindow.webContents.send("message:res", [err.message]);
+    }
+}
+
+async function sendWorkentrycreate() {
+    try {
+        return;
+        const [fetched_categories, fetched_projects] = await Promise.all([
+            axios.get(CATEGORY_URL),
+            axios.get(PROJECT_URL),
+        ]);
+        // .then(([fetched_categories, fetched_projects]) => {
+        //     mainWindow.webContents.send(
+        //         "workentrycreate:get",
+        //         JSON.stringify({ categories: fetched_categories.data, projects: fetched_projects.data })
+        //     );
+        // })
+        // .catch((err) => console.error(err));
+        mainWindow.webContents.send(
+            "workentrycreate:get",
+            JSON.stringify({
+                categories: fetched_categories.data,
+                projects: fetched_projects.data,
+            })
+        );
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+async function sendWorkentries() {
+    try {
+        const workentries = await axios.get(WORKENTRY_URL);
+        mainWindow.webContents.send(
+            "workentries:get",
+            JSON.stringify(workentries.data)
+        );
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+async function sendNewWorkentry(e, w) {
+    try {
+        // await axios.post(WORKENTRY_URL, {
+        //     id: w.id,
+        // projectName: w.projectName,
+        // categoryName: w.categoryName,
+        // fromDate: w.fromDate,
+        // untilDate: w.untilDate,
+        // optionalText: w.optionalText,
+        // });
+        console.info("w: ", w);
+        const workentry = new Workentry({
+            projectName: w.projectName,
+            categoryName: w.categoryName,
+            fromDate: w.fromDate,
+            untilDate: w.untilDate,
+            optionalText: w.optionalText,
+        });
+        console.info("workentry", workentry);
+        const saved = await workentry.save();
+        console.log("saved", saved);
+        mainWindow.webContents.send("workentrycreate:created");
+        // sendWorkentries();
+    } catch (err) {
+        mainWindow.webContents.send("workentrycreate:failed");
+        console.error(err);
+    }
+}
