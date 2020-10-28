@@ -14,6 +14,12 @@
   "keywords": [],
   "author": "CBirkenmaier",
   "license": "MIT",
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ]
+  },
   "config": {
     "forge": {
       "packagerConfig": {},
@@ -73,6 +79,12 @@
     "style-loader": "^1.3.0"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-react": "^7.12.1",
+    "babel-loader": "^8.1.0",
+    "electron-squirrel-startup": "^1.0.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   }
 }
