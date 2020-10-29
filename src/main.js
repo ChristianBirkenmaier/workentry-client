@@ -2,8 +2,9 @@ const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const axios = require("axios");
 const regeneratorRuntime = require("regenerator-runtime");
-const { db, message } = require("../db")();
-const { Workentry, Category, Project } = require("../models");
+const { db, message } = require("./db")();
+const { Workentry, Category, Project } = require("./models");
+const mongoose = require("mongoose");
 
 const CATEGORY_URL = "http://localhost:8080/api/v1/category/";
 const PROJECT_URL = "http://localhost:8080/api/v1/project/";
@@ -168,8 +169,8 @@ async function sendNewWorkentry(e, w) {
         // });
         console.info("w: ", w);
         const workentry = new Workentry({
-            projectName: w.projectName,
-            categoryName: w.categoryName,
+            projectName: mongoose.Types.ObjectId(w.projectName),
+            categoryName: mongoose.Types.ObjectId(w.categoryName),
             fromDate: w.fromDate,
             untilDate: w.untilDate,
             optionalText: w.optionalText,

@@ -24,7 +24,12 @@ const CATEGORY_URL = "http://localhost:8080/api/v1/category/";
 const PROJECT_URL = "http://localhost:8080/api/v1/project/";
 const WORKENTRY_URL = "http://localhost:8080/api/v1/workentry";
 
-export default function CreateWorkentry({ show, handleClose, workentries, setWorkentries }) {
+export default function CreateWorkentry({
+    show,
+    handleClose,
+    workentries,
+    setWorkentries,
+}) {
     let [categories, setCategories] = useState([{ id: 0, categoryName: "C1" }]);
     let [projects, setProjects] = useState([{ id: 0, projectName: "P1" }]);
     let [selectedProject, setSelectedProject] = useState(undefined);
@@ -87,7 +92,12 @@ export default function CreateWorkentry({ show, handleClose, workentries, setWor
     }, []);
 
     useEffect(() => {
-        if (!!startTime && !!endTime && !!selectedCategory && !!selectedProject) {
+        if (
+            !!startTime &&
+            !!endTime &&
+            !!selectedCategory &&
+            !!selectedProject
+        ) {
             return setIsDisabled(false);
         }
         setIsDisabled(true);
@@ -118,7 +128,7 @@ export default function CreateWorkentry({ show, handleClose, workentries, setWor
 
     function createWorkentry() {
         let newWorkentry = {
-            id: uuidv4(),
+            // id: uuidv4(),
             projectName: selectedProject._id,
             categoryName: selectedCategory._id,
             fromDate: startTime,
@@ -141,7 +151,9 @@ export default function CreateWorkentry({ show, handleClose, workentries, setWor
             <Modal.Body>
                 <Dropdown className="mb-3 ">
                     <Dropdown.Toggle variant="warning" className="" block>
-                        {selectedProject ? selectedProject.projectName : "Projekt"}
+                        {selectedProject
+                            ? selectedProject.projectName
+                            : "Projekt"}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                         {projects.map((p) => (
@@ -162,7 +174,9 @@ export default function CreateWorkentry({ show, handleClose, workentries, setWor
 
                 <Dropdown className="mb-3">
                     <Dropdown.Toggle variant="warning" block>
-                        {selectedCategory ? selectedCategory.categoryName : "Kategorie"}
+                        {selectedCategory
+                            ? selectedCategory.categoryName
+                            : "Kategorie"}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                         {categories.map((c) => (
@@ -193,14 +207,20 @@ export default function CreateWorkentry({ show, handleClose, workentries, setWor
                         value={startTimeTmp}
                         onChange={(e) => setStartTimeTmp(e.target.value)}
                         onBlur={(e) => {
-                            setStartTime(moment(startTimeTmp, "HH:mm").format("HH:mm"));
+                            setStartTime(
+                                moment(startTimeTmp, "HH:mm").format("HH:mm")
+                            );
                         }}
                     />
                     <InputGroup.Text>
                         <BsFillForwardFill />
                     </InputGroup.Text>
                     <FormControl
-                        onBlur={(e) => setEndTime(moment(endTimeTmp, "HH:mm").format("HH:mm"))}
+                        onBlur={(e) =>
+                            setEndTime(
+                                moment(endTimeTmp, "HH:mm").format("HH:mm")
+                            )
+                        }
                         // value={endTime ? `${endTime.getHours()}:${endTime.getMinutes()}` : undefined}
                         // value={isTracking ? endTime : undefined}
 
@@ -221,7 +241,10 @@ export default function CreateWorkentry({ show, handleClose, workentries, setWor
                 </InputGroup>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant={isTracking ? "danger" : "secondary"} onClick={track}>
+                <Button
+                    variant={isTracking ? "danger" : "secondary"}
+                    onClick={track}
+                >
                     {isTracking ? "Stop" : "Track"}
                 </Button>
                 <Button variant="secondary" onClick={handleClose}>
@@ -230,7 +253,11 @@ export default function CreateWorkentry({ show, handleClose, workentries, setWor
                 <Button variant="secondary" onClick={reset}>
                     Reset
                 </Button>
-                <Button variant="warning" disabled={isDisabled} onClick={createWorkentry}>
+                <Button
+                    variant="warning"
+                    disabled={isDisabled}
+                    onClick={createWorkentry}
+                >
                     Save Changes
                 </Button>
             </Modal.Footer>

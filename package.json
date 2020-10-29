@@ -11,6 +11,11 @@
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\""
   },
+  "engines": {
+    "node": ">=9.0.0",
+    "npm": ">=5.0.0",
+    "yarn": ">=1.0.0"
+},
   "keywords": [],
   "author": "CBirkenmaier",
   "license": "MIT",
