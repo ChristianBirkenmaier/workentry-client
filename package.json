@@ -30,6 +30,18 @@
   },
   "config": {
     "forge": {
+      "publishers": [
+        {
+          "name": "@electron-forge/publisher-github",
+          "config": {
+            "repository": {
+              "owner": "christianbirkenmaier",
+              "name": "workentry-client"
+            },
+            "prerelease": true
+          }
+        }
+      ],
       "github_repository": {
         "owner": "christianbirkenmaier",
         "name": "workentry-client"
@@ -84,6 +96,7 @@
     "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
     "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "@electron-forge/plugin-webpack": "^6.0.0-beta.54",
+    "@electron-forge/publisher-github": "^6.0.0-beta.54",
     "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
     "css-loader": "^4.3.0",
     "electron": "10.1.5",
