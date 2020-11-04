@@ -2,13 +2,13 @@ const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const axios = require("axios");
 const regeneratorRuntime = require("regenerator-runtime");
-const { db, message } = require("./db")();
-const { Workentry, Category, Project } = require("./models");
-const mongoose = require("mongoose");
+// const { db, message } = require("./db")();
+// const { Workentry, Category, Project } = require("./models");
+// const mongoose = require("mongoose");
 
-const CATEGORY_URL = "http://localhost:8080/api/v1/category/";
-const PROJECT_URL = "http://localhost:8080/api/v1/project/";
-const WORKENTRY_URL = "http://localhost:8080/api/v1/workentry";
+const CATEGORY_URL = "https://workentry-api.herokuapp.com/api/v1/category/";
+const PROJECT_URL = "https://workentry-api.herokuapp.com/api/v1/project/";
+const WORKENTRY_URL = "https://workentry-api.herokuapp.com/api/v1/workentry";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -62,6 +62,7 @@ app.on("activate", () => {
 
 function handleListeners() {
     ipcMain.on("message:req", () => {
+        message = [];
         console.log("Message: ", message);
         mainWindow.webContents.send("message:res", message);
     });
@@ -83,13 +84,14 @@ async function loadCategories() {
         console.log("loadCategories");
         let categories;
         // categories = await Category.find();
+        categories = await axios.get(CATEGORY_URL);
         if (!categories) {
             categories = [
                 { _id: "0123", categoryName: "Bli" },
                 { _id: "2345", categoryName: "Bla" },
             ];
         }
-        console.log("categories", categories);
+        console.log("categories", categories.data);
         mainWindow.webContents.send(
             "categories:get",
             JSON.stringify(categories)
@@ -104,6 +106,7 @@ async function loadProjects() {
     try {
         console.log("loadProjects");
         let projects;
+        projects = await axios.get(PROJECT_URL);
         // projects = await Project.find();
         if (!projects) {
             projects = [
@@ -111,7 +114,7 @@ async function loadProjects() {
                 { _id: "dasd2", projectName: "asfsaf" },
             ];
         }
-        console.log("projects", projects);
+        console.log("projects", projects.data);
         mainWindow.webContents.send("projects:get", JSON.stringify(projects));
     } catch (err) {
         console.error(err);

@@ -15,7 +15,7 @@
     "node": ">=9.0.0",
     "npm": ">=5.0.0",
     "yarn": ">=1.0.0"
-},
+  },
   "keywords": [],
   "author": "CBirkenmaier",
   "license": "MIT",
@@ -30,6 +30,10 @@
   },
   "config": {
     "forge": {
+      "github_repository": {
+        "owner": "christianbirkenmaier",
+        "name": "workentry-client"
+      },
       "packagerConfig": {},
       "makers": [
         {
@@ -89,7 +93,7 @@
   "dependencies": {
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
-    "@babel/preset-react": "^7.12.1",
+    "@babel/preset-react": "^7.12.5",
     "axios": "^0.21.0",
     "babel-loader": "^8.1.0",
     "bootstrap": "^4.5.3",

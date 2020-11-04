@@ -12,102 +12,97 @@ import CreateWorkentry from "./CreateWorkentry";
 import Workentry from "./Workentry";
 
 const App = () => {
-    const [workentries, setWorkentries] = useState([]);
-    const CreateWorkentryComp = (
-        <CreateWorkentry
-            workentries={workentries}
-            setWorkentries={setWorkentries}
-        />
-    );
-    const WorkentryComp = <Workentry workentries={workentries} />;
-    const [show, setShow] = useState(false);
+  const [workentries, setWorkentries] = useState([]);
+  const CreateWorkentryComp = <CreateWorkentry workentries={workentries} setWorkentries={setWorkentries} />;
+  const WorkentryComp = <Workentry workentries={workentries} />;
+  const [show, setShow] = useState(false);
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
-    let alert = useAlert();
+  let alert = useAlert();
 
-    let [activeComponent, setActiveComponent] = useState(CreateWorkentryComp);
+  let [activeComponent, setActiveComponent] = useState(CreateWorkentryComp);
 
-    // function addItem(item) {
-    //     if (item.text === "" || item.user === "" || item.priority === "") {
-    //         showAlert("Please enter all fields", "danger");
-    //         return false;
-    //     }
-    // item._id = Math.floor(Math.random() * 90000) + 1000;
-    // item.created = new Date().toString();
-    // setLogs([...logs, item]);
+  // function addItem(item) {
+  //     if (item.text === "" || item.user === "" || item.priority === "") {
+  //         showAlert("Please enter all fields", "danger");
+  //         return false;
+  //     }
+  // item._id = Math.floor(Math.random() * 90000) + 1000;
+  // item.created = new Date().toString();
+  // setLogs([...logs, item]);
 
-    // ipcRenderer.send("logs:add", item);
+  // ipcRenderer.send("logs:add", item);
 
-    // showAlert("Bug reported");
-    // }
+  // showAlert("Bug reported");
+  // }
 
-    // function showAlert(message = "", variant = "success", seconds = 3000) {
-    //     setAlert({ message, variant, show: true });
+  // function showAlert(message = "", variant = "success", seconds = 3000) {
+  //     setAlert({ message, variant, show: true });
 
-    //     setTimeout(() => setAlert({ message: "", variant: "success", show: false }), seconds);
-    // }
+  //     setTimeout(() => setAlert({ message: "", variant: "success", show: false }), seconds);
+  // }
 
-    // function deleteItem(_id) {
-    //     // setLogs(logs.filter((l) => l._id !== _id));
-    //     ipcRenderer.send("logs:delete", _id);
-    //     showAlert("Log removed");
-    // }
-    // const [alert, setAlert] = useState({
-    //     show: false,
-    //     message: "",
-    //     variant: "success",
+  // function deleteItem(_id) {
+  //     // setLogs(logs.filter((l) => l._id !== _id));
+  //     ipcRenderer.send("logs:delete", _id);
+  //     showAlert("Log removed");
+  // }
+  // const [alert, setAlert] = useState({
+  //     show: false,
+  //     message: "",
+  //     variant: "success",
+  // });
+
+  useEffect(() => {
+    ipcRenderer.send("message:req");
+    ipcRenderer.on("message:res", (e, message = []) => {
+      console.log("message:res", message);
+      message.map((m) => alert.show(`${m.message.substring(0, 40)}...`));
+    });
+    // ipcRenderer.send("logs:load");
+    // ipcRenderer.on("logs:get", (e, logs) => {
+    //     setLogs(JSON.parse(logs));
     // });
-
-    useEffect(() => {
-        ipcRenderer.send("message:req");
-        ipcRenderer.on("message:res", (e, message = []) => {
-            console.log("message:res", message);
-            message.map((m) => alert.show(`${m.message.substring(0, 40)}...`));
-        });
-        // ipcRenderer.send("logs:load");
-        // ipcRenderer.on("logs:get", (e, logs) => {
-        //     setLogs(JSON.parse(logs));
-        // });
-        // ipcRenderer.on("logs:clear", () => {
-        //     setLogs([]);
-        //     showAlert("Logs cleared");
-        // });
-    }, []);
-    // const [logs, setLogs] = useState(initData);
-    return (
-        <div className="App-main">
-            {/* <CreateWorkentry />
+    // ipcRenderer.on("logs:clear", () => {
+    //     setLogs([]);
+    //     showAlert("Logs cleared");
+    // });
+  }, []);
+  // const [logs, setLogs] = useState(initData);
+  return (
+    <div className="App-main">
+      {/* <CreateWorkentry />
             <hr />
             <Workentry /> */}
-            {/* {activeComponent} */}
-            <CreateWorkentry
-                show={show}
-                handleClose={handleClose}
-                workentries={workentries}
-                setWorkentries={setWorkentries}
-            />
-            <Workentry workentries={workentries} />
-            <Navbar
-                className="navbar-bottom"
-                fixed="bottom"
-                variant="light"
-                bg="light"
-                style={{ display: "flex", justifyContent: "space-between" }}
-            >
-                <Navbar.Brand onClick={handleShow}>
-                    <BsFilePlus />
-                </Navbar.Brand>
-                <Navbar.Brand onClick={() => setActiveComponent(WorkentryComp)}>
-                    <BsListUl />
-                </Navbar.Brand>
-                <Navbar.Brand>
-                    <BsGear />
-                </Navbar.Brand>
-            </Navbar>
-        </div>
-    );
+      {/* {activeComponent} */}
+      <CreateWorkentry
+        show={show}
+        handleClose={handleClose}
+        workentries={workentries}
+        setWorkentries={setWorkentries}
+      />
+      <Workentry workentries={workentries} />
+      <Navbar
+        className="navbar-bottom"
+        fixed="bottom"
+        variant="light"
+        bg="light"
+        style={{ display: "flex", justifyContent: "space-between" }}
+      >
+        <Navbar.Brand onClick={handleShow}>
+          <BsFilePlus />
+        </Navbar.Brand>
+        <Navbar.Brand onClick={() => setActiveComponent(WorkentryComp)}>
+          <BsListUl />
+        </Navbar.Brand>
+        <Navbar.Brand>
+          <BsGear />
+        </Navbar.Brand>
+      </Navbar>
+    </div>
+  );
 };
 
 export default hot(module)(App);
