@@ -1,0 +1,8 @@
+{
+    "PROD_WORKENTRY_API":"https://workentry-api.herokuapp.com/api/v1/workentry",
+    "PROD_CATEGORY_API":"https://workentry-api.herokuapp.com/api/v1/category",
+    "PROD_PROJECT_API":"https://workentry-api.herokuapp.com/api/v1/project",
+    "DEV_WORKENTRY_API":"http://localhost:3212/api/v1/workentry",
+    "DEV_CATEGORY_API":"http://localhost:3212/api/v1/category",
+    "DEV_PROJECT_API":"http://localhost:3212/api/v1/project"
+}

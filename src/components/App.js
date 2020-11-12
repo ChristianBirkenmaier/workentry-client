@@ -7,6 +7,7 @@ import { hot } from "react-hot-loader";
 
 import { useAlert } from "react-alert";
 import { BsFilePlus, BsListUl, BsGear } from "react-icons/bs";
+import { FaDev } from "react-icons/fa";
 
 import CreateWorkentry from "./CreateWorkentry";
 import Workentry from "./Workentry";
@@ -16,6 +17,8 @@ const App = () => {
   const CreateWorkentryComp = <CreateWorkentry workentries={workentries} setWorkentries={setWorkentries} />;
   const WorkentryComp = <Workentry workentries={workentries} />;
   const [show, setShow] = useState(false);
+  let [isDev, setIsDev] = useState(true);
+  let [updateWorkentry, setUpdateWorkentry] = useState(null);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -55,8 +58,15 @@ const App = () => {
   //     variant: "success",
   // });
 
+  function handleUpdate(entryToUpdate) {
+    setUpdateWorkentry(entryToUpdate);
+    handleShow();
+  }
+
   useEffect(() => {
     ipcRenderer.send("message:req");
+    ipcRenderer.send("isDev:req");
+    ipcRenderer.on("isDev:res", (e, w) => setIsDev(w));
     ipcRenderer.on("message:res", (e, message = []) => {
       console.log("message:res", message);
       message.map((m) => alert.show(`${m.message.substring(0, 40)}...`));
@@ -79,11 +89,13 @@ const App = () => {
       {/* {activeComponent} */}
       <CreateWorkentry
         show={show}
+        isDev={isDev}
         handleClose={handleClose}
         workentries={workentries}
         setWorkentries={setWorkentries}
+        updateWorkentry={updateWorkentry}
       />
-      <Workentry workentries={workentries} />
+      <Workentry isDev={isDev} workentries={workentries} handleUpdate={handleUpdate} />
       <Navbar
         className="navbar-bottom"
         fixed="bottom"
@@ -98,7 +110,8 @@ const App = () => {
           <BsListUl />
         </Navbar.Brand>
         <Navbar.Brand>
-          <BsGear />
+          {/* <BsGear /> */}
+          {isDev && <FaDev />}
         </Navbar.Brand>
       </Navbar>
     </div>

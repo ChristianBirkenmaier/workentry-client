@@ -15,13 +15,21 @@ import {
 import Modal from "react-bootstrap/Modal";
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
+import {
+  PROD_WORKENTRY_API,
+  PROD_CATEGORY_API,
+  PROD_PROJECT_API,
+  DEV_WORKENTRY_API,
+  DEV_CATEGORY_API,
+  DEV_PROJECT_API,
+} from "../config/api.json";
 const regeneratorRuntime = require("regenerator-runtime");
 
-const CATEGORY_URL = "https://workentry-api.herokuapp.com/api/v1/category/";
-const PROJECT_URL = "https://workentry-api.herokuapp.com/api/v1/project/";
-const WORKENTRY_URL = "https://workentry-api.herokuapp.com/api/v1/workentry";
+// const CATEGORY_URL = "https://workentry-api.herokuapp.com/api/v1/category";
+// const PROJECT_URL = "https://workentry-api.herokuapp.com/api/v1/project";
+// const WORKENTRY_URL = "https://workentry-api.herokuapp.com/api/v1/workentry";
 
-export default function CreateWorkentry({ show, handleClose, workentries, setWorkentries }) {
+export default function CreateWorkentry({ show, handleClose, workentries, setWorkentries, isDev, updateWorkentry }) {
   let [categories, setCategories] = useState([{ id: 0, categoryName: "C1" }]);
   let [projects, setProjects] = useState([{ id: 0, projectName: "P1" }]);
   let [selectedProject, setSelectedProject] = useState(undefined);
@@ -56,6 +64,19 @@ export default function CreateWorkentry({ show, handleClose, workentries, setWor
   }, [newWorkentryState]);
 
   useEffect(() => {
+    if (!updateWorkentry) return;
+    console.log("updateWorkentry", updateWorkentry);
+    const { category, project, fromDate, untilDate, optionalText } = updateWorkentry;
+    setSelectedCategory(category);
+    setSelectedProject(project);
+    setStartTime(fromDate);
+    setStartTimeTmp(fromDate);
+    setEndTime(untilDate);
+    setEndTimeTmp(untilDate);
+    setOptionalText(optionalText);
+  }, [updateWorkentry]);
+
+  useEffect(() => {
     loadCategoriesAndProjects();
     // ipcRenderer.send("workentrycreate:load");
     // ipcRenderer.send("categories:load");
@@ -87,7 +108,10 @@ export default function CreateWorkentry({ show, handleClose, workentries, setWor
 
   async function loadCategoriesAndProjects() {
     try {
-      let [categories, projects] = await Promise.all([axios.get(CATEGORY_URL), axios.get(PROJECT_URL)]);
+      let [categories, projects] = await Promise.all([
+        axios.get(isDev ? DEV_CATEGORY_API : PROD_CATEGORY_API),
+        axios.get(isDev ? DEV_PROJECT_API : PROD_PROJECT_API),
+      ]);
       console.log(categories, projects);
       setCategories(categories.data.data);
       setProjects(projects.data.data);
@@ -138,7 +162,7 @@ export default function CreateWorkentry({ show, handleClose, workentries, setWor
         optionalText: optionalText || "",
       };
       console.log(newWorkentry);
-      let resp = await axios.post(WORKENTRY_URL, newWorkentry);
+      let resp = await axios.post(isDev ? DEV_WORKENTRY_API : PROD_WORKENTRY_API, newWorkentry);
       console.log("Successfully posted: ", "newWorkentry: ", newWorkentry, "response: ", resp);
       reset();
       handleClose();
@@ -158,7 +182,7 @@ export default function CreateWorkentry({ show, handleClose, workentries, setWor
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Neuer Zeiteintrag</Modal.Title>
+        <Modal.Title>{updateWorkentry ? "Zeiteintrag bearbeiten" : "Neuer Zeiteintrag"}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Dropdown className="mb-3 ">

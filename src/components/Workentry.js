@@ -3,10 +3,16 @@ import { ipcRenderer } from "electron";
 import Table from "react-bootstrap/Table";
 import moment from "moment";
 import axios from "axios";
+import { BsFillTrashFill, BsGear } from "react-icons/bs";
+import Button from "react-bootstrap/Button";
+import { useAlert } from "react-alert";
 
-export default function Workentry({ workentries }) {
+import { PROD_WORKENTRY_API, DEV_WORKENTRY_API } from "../config/api.json";
+
+export default function Workentry({ workentries, isDev, handleUpdate }) {
   // let url = "http://localhost:8080/api/v1/workentry";
   let [localWorkentries, setLocalWorkentries] = useState([]);
+  let alert = useAlert();
 
   // useEffect(() => {
   //     ipcRenderer.send("workentries:load");
@@ -31,9 +37,21 @@ export default function Workentry({ workentries }) {
   //     }
   // }
 
+  async function deleteWorkentry(_id) {
+    try {
+      console.debug("deleteWorkentry", _id);
+      await axios.delete(isDev ? `${DEV_WORKENTRY_API}/${_id}` : `${PROD_WORKENTRY_API}/${_id}`);
+      let filteredWorkentries = localWorkentries.filter((l) => l._id != _id);
+      setLocalWorkentries(filteredWorkentries);
+      alert.show(`Zeiteintrag erfolgreich gelöscht`);
+    } catch (err) {
+      console.error("Error:", err);
+      alert.show("Fehler beim Löschen des Zeiteintrags");
+    }
+  }
+
   return (
     <Table striped bordered hover variant="light" size="sm" style={{ tableLayout: "fixed" }}>
-      {console.log(workentries)}
       <thead>
         <tr>
           <th>#</th>
@@ -42,18 +60,29 @@ export default function Workentry({ workentries }) {
           <th>Optional</th>
           <th>Start</th>
           <th>End</th>
+          <th></th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
-        {workentries.map((w) => (
+        {localWorkentries.map((w) => (
           <tr key={w._id}>
-            {console.log(w)}
             <td>{w._id.substring(0, 8)}</td>
             <td>{w.project.project}</td>
             <td>{w.category.category}</td>
             <td>{w.optionalText}</td>
             <td>{w.fromDate}</td>
             <td>{w.untilDate}</td>
+            <td>
+              <Button>
+                <BsGear onClick={() => handleUpdate(w)} />
+              </Button>
+            </td>
+            <td>
+              <Button>
+                <BsFillTrashFill onClick={() => deleteWorkentry(w._id)} />
+              </Button>
+            </td>
           </tr>
         ))}
       </tbody>
