@@ -34,7 +34,7 @@
         {
           "name": "@electron-forge/publisher-github",
           "config": {
-            "authToken": "f80eda338ed1f948ee45e641d79c399478508923",
+            "authToken": "",
             "repository": {
               "owner": "christianbirkenmaier",
               "name": "workentry-client"
