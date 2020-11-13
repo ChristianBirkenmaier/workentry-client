@@ -9,57 +9,22 @@ import { useAlert } from "react-alert";
 import { BsFilePlus, BsListUl, BsGear } from "react-icons/bs";
 import { FaDev } from "react-icons/fa";
 
-import CreateWorkentry from "./CreateWorkentry";
 import Workentry from "./Workentry";
+import WorkentryList from "./WorkentryList";
 
 const App = () => {
   const [workentries, setWorkentries] = useState([]);
-  const CreateWorkentryComp = <CreateWorkentry workentries={workentries} setWorkentries={setWorkentries} />;
-  const WorkentryComp = <Workentry workentries={workentries} />;
   const [show, setShow] = useState(false);
   let [isDev, setIsDev] = useState(true);
-  let [updateWorkentry, setUpdateWorkentry] = useState(null);
+  let [workentryToUpdate, setWorkentryToUpdate] = useState(null);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   let alert = useAlert();
 
-  let [activeComponent, setActiveComponent] = useState(CreateWorkentryComp);
-
-  // function addItem(item) {
-  //     if (item.text === "" || item.user === "" || item.priority === "") {
-  //         showAlert("Please enter all fields", "danger");
-  //         return false;
-  //     }
-  // item._id = Math.floor(Math.random() * 90000) + 1000;
-  // item.created = new Date().toString();
-  // setLogs([...logs, item]);
-
-  // ipcRenderer.send("logs:add", item);
-
-  // showAlert("Bug reported");
-  // }
-
-  // function showAlert(message = "", variant = "success", seconds = 3000) {
-  //     setAlert({ message, variant, show: true });
-
-  //     setTimeout(() => setAlert({ message: "", variant: "success", show: false }), seconds);
-  // }
-
-  // function deleteItem(_id) {
-  //     // setLogs(logs.filter((l) => l._id !== _id));
-  //     ipcRenderer.send("logs:delete", _id);
-  //     showAlert("Log removed");
-  // }
-  // const [alert, setAlert] = useState({
-  //     show: false,
-  //     message: "",
-  //     variant: "success",
-  // });
-
   function handleUpdate(entryToUpdate) {
-    setUpdateWorkentry(entryToUpdate);
+    setWorkentryToUpdate(entryToUpdate);
     handleShow();
   }
 
@@ -68,34 +33,20 @@ const App = () => {
     ipcRenderer.send("isDev:req");
     ipcRenderer.on("isDev:res", (e, w) => setIsDev(w));
     ipcRenderer.on("message:res", (e, message = []) => {
-      console.log("message:res", message);
       message.map((m) => alert.show(`${m.message.substring(0, 40)}...`));
     });
-    // ipcRenderer.send("logs:load");
-    // ipcRenderer.on("logs:get", (e, logs) => {
-    //     setLogs(JSON.parse(logs));
-    // });
-    // ipcRenderer.on("logs:clear", () => {
-    //     setLogs([]);
-    //     showAlert("Logs cleared");
-    // });
   }, []);
-  // const [logs, setLogs] = useState(initData);
   return (
     <div className="App-main">
-      {/* <CreateWorkentry />
-            <hr />
-            <Workentry /> */}
-      {/* {activeComponent} */}
-      <CreateWorkentry
+      <Workentry
         show={show}
         isDev={isDev}
         handleClose={handleClose}
         workentries={workentries}
         setWorkentries={setWorkentries}
-        updateWorkentry={updateWorkentry}
+        workentryToUpdate={workentryToUpdate}
       />
-      <Workentry isDev={isDev} workentries={workentries} handleUpdate={handleUpdate} />
+      <WorkentryList isDev={isDev} workentries={workentries} handleUpdate={handleUpdate} />
       <Navbar
         className="navbar-bottom"
         fixed="bottom"
@@ -106,7 +57,7 @@ const App = () => {
         <Navbar.Brand onClick={handleShow}>
           <BsFilePlus />
         </Navbar.Brand>
-        <Navbar.Brand onClick={() => setActiveComponent(WorkentryComp)}>
+        <Navbar.Brand>
           <BsListUl />
         </Navbar.Brand>
         <Navbar.Brand>
