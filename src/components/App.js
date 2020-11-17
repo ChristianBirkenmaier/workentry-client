@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Container, Dropdown } from "react-bootstrap";
 import Navbar from "react-bootstrap/Navbar";
 import { ipcRenderer } from "electron";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { hot } from "react-hot-loader";
 import BootstrapSwitchButton from "bootstrap-switch-button-react";
-
+import { BsFilePlus, BsListUl } from "react-icons/bs";
 import { useAlert } from "react-alert";
-import { BsFilePlus, BsListUl, BsGear } from "react-icons/bs";
-import { FaDev } from "react-icons/fa";
+
+import "bootstrap/dist/css/bootstrap.min.css";
 
 import Workentry from "./Workentry";
 import WorkentryList from "./WorkentryList";
@@ -37,6 +35,7 @@ const App = () => {
       message.map((m) => alert.show(`${m.message.substring(0, 40)}...`));
     });
   }, []);
+
   return (
     <div className="App-main">
       <Workentry
@@ -62,29 +61,6 @@ const App = () => {
           <BsListUl />
         </Navbar.Brand>
         <Navbar.Brand>
-          {/* <Dropdown drop={"up"}>
-            <Dropdown.Toggle variant="warning" className="">
-              {isDev ? "Dev" : "Prod"}
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item
-                onClick={() => {
-                  console.log("Setting connection to dev");
-                  setIsDev(true);
-                }}
-              >
-                Dev
-              </Dropdown.Item>
-              <Dropdown.Item
-                onClick={() => {
-                  console.log("Setting connection to prod");
-                  setIsDev(false);
-                }}
-              >
-                Prod
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown> */}
           <BootstrapSwitchButton
             checked={!!isDev}
             onlabel="Dev"

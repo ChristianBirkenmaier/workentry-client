@@ -5,13 +5,7 @@ import moment from "moment";
 import axios from "axios";
 import { useAlert } from "react-alert";
 import { ipcRenderer } from "electron";
-import {
-  BsFillCaretRightFill,
-  BsFillPauseFill,
-  BsFillTrashFill,
-  BsFillForwardFill,
-  BsFillClockFill,
-} from "react-icons/bs";
+import { BsFillForwardFill, BsFillClockFill } from "react-icons/bs";
 import Modal from "react-bootstrap/Modal";
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
@@ -24,10 +18,6 @@ import {
   DEV_PROJECT_API,
 } from "../config/api.json";
 const regeneratorRuntime = require("regenerator-runtime");
-
-// const CATEGORY_URL = "https://workentry-api.herokuapp.com/api/v1/category";
-// const PROJECT_URL = "https://workentry-api.herokuapp.com/api/v1/project";
-// const WORKENTRY_URL = "https://workentry-api.herokuapp.com/api/v1/workentry";
 
 export default function Workentry({ show, handleClose, workentries, setWorkentries, isDev, workentryToUpdate }) {
   const DEV_URLS = { workentriesUrl: DEV_WORKENTRY_API, categoriesUrl: DEV_CATEGORY_API, projectsUrl: DEV_PROJECT_API };
@@ -52,9 +42,6 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
   let [customInterval, setCustomInterval] = useState(null);
   let [errorState, setErrorState] = useState(false);
   let [idToUpdate, setIdToUpdate] = useState(null);
-  const [projectUrl, setProjectUrl] = useState(isDev ? DEV_PROJECT_API : PROD_PROJECT_API);
-  const [categoryUrl, setCategoryUrl] = useState(isDev ? DEV_CATEGORY_API : PROD_CATEGORY_API);
-  const [workentryUrl, setWorkentryUrl] = useState(isDev ? DEV_WORKENTRY_API : PROD_WORKENTRY_API);
   const [urls, setUrls] = useState(isDev ? DEV_URLS : PROD_URLS);
 
   let alert = useAlert();
@@ -72,9 +59,6 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
   }
 
   useEffect(() => {
-    // setProjectUrl(isDev ? DEV_PROJECT_API : PROD_PROJECT_API);
-    // setCategoryUrl(isDev ? DEV_CATEGORY_API : PROD_CATEGORY_API);
-    // setWorkentryUrl(isDev ? DEV_WORKENTRY_API : PROD_WORKENTRY_API);
     setUrls(isDev ? DEV_URLS : PROD_URLS);
   }, [isDev]);
 
@@ -105,32 +89,6 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
 
   useEffect(() => {
     loadCategoriesAndProjects();
-    // ipcRenderer.send("workentrycreate:load");
-    // ipcRenderer.send("categories:load");
-    // ipcRenderer.send("projects:load");
-    ipcRenderer.on("workentrycreate:get", (e, w) => {
-      const { categories, projects } = JSON.parse(w);
-      categories && setCategories(categories);
-      projects && setProjects(projects);
-    });
-    ipcRenderer.on("categories:get", (e, w) => {
-      const categories = JSON.parse(w);
-      setCategories(categories);
-    });
-    ipcRenderer.on("projects:get", (e, w) => {
-      const projects = JSON.parse(w);
-      setProjects(projects);
-    });
-    ipcRenderer.on("workentrycreate:created", (e, w) => {
-      // setWorkentries([...workentries, newWorkentryState]);
-      alert.show("Zeiteintrag erfolgreich gespeichert");
-      reset();
-    });
-    ipcRenderer.on("workentrycreate:failed", (e, w) => {
-      // setWorkentries([...workentries, newWorkentry]);
-      alert.show("Fehler beim Speichern des Zeiteintrags");
-      // reset();
-    });
   }, []);
 
   async function loadCategoriesAndProjects() {
@@ -287,9 +245,6 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
           </InputGroup.Text>
           <FormControl
             onBlur={(e) => setEndTime(moment(endTimeTmp, "HH:mm").format("HH:mm"))}
-            // value={endTime ? `${endTime.getHours()}:${endTime.getMinutes()}` : undefined}
-            // value={isTracking ? endTime : undefined}
-
             onChange={(e) => setEndTimeTmp(e.target.value)}
             value={endTimeTmp}
             placeholder="Bis"

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ipcRenderer } from "electron";
 import Table from "react-bootstrap/Table";
-import moment from "moment";
 import axios from "axios";
 import { BsFillTrashFill, BsGear } from "react-icons/bs";
 import Button from "react-bootstrap/Button";
@@ -10,42 +8,17 @@ import { useAlert } from "react-alert";
 import { PROD_WORKENTRY_API, DEV_WORKENTRY_API } from "../config/api.json";
 
 export default function WorkentryList({ workentries, isDev, handleUpdate }) {
-  // let url = "http://localhost:8080/api/v1/workentry";
   let [localWorkentries, setLocalWorkentries] = useState([]);
   const [projectUrl, setProjectUrl] = useState(isDev ? DEV_WORKENTRY_API : PROD_WORKENTRY_API);
 
   let alert = useAlert();
-
-  // useEffect(() => {
-  //     ipcRenderer.send("workentries:load");
-  //     ipcRenderer.on("workentries:get", (e, w) => {
-  //         setWorkentries(JSON.parse(w));
-  //     });
-  // }, [url]);
-
   useEffect(() => {
     setProjectUrl(isDev ? DEV_WORKENTRY_API : PROD_WORKENTRY_API);
   }, [isDev]);
 
   useEffect(() => {
-    // console.log("localWorkentries: ", localWorkentries);
-    // let filteredItems = workentries.filter((item, pos, self) => self.indexOf(item) == pos);
-    // let filteredItems = workentries.filter((item, pos, self) => self.indexOf(item) == pos);
-    // console.log(filteredItems);
     setLocalWorkentries(workentries);
   }, [workentries]);
-
-  // function fetchData() {
-  //     try {
-  //         console.log(`Fetching from ${url}`);
-  //         let workentries = axios.get(url).then((we) => {
-  //             console.dir(`Successfully fetched, data recieved: ${JSON.stringify(workentries)}`);
-  //             return setWorkentries(workentries);
-  //         });
-  //     } catch (err) {
-  //         console.error(err);
-  //     }
-  // }
 
   async function deleteWorkentry(_id) {
     try {
