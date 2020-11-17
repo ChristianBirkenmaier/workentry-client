@@ -1,8 +1,8 @@
 {
   "name": "noerpel-zeiteintraege",
-  "productName": "Noerpel - Zeiteintraege",
+  "productName": "Noerpel-Zeiteintraege",
   "version": "1.0.1",
-  "description": "Noerpel - Zeiteintraege",
+  "description": "Noerpel-Zeiteintraege",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
@@ -20,8 +20,13 @@
   "author": "CBirkenmaier",
   "license": "MIT",
   "babel": {
-    "presets": ["@babel/preset-env", "@babel/preset-react"],
-    "plugins": ["react-hot-loader/babel"]
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ],
+    "plugins": [
+      "react-hot-loader/babel"
+    ]
   },
   "config": {
     "forge": {
@@ -29,7 +34,7 @@
         {
           "name": "@electron-forge/publisher-github",
           "config": {
-            "authToken": "08586ec11691a79029ac219439227cb30a957289",
+            "authToken": "",
             "repository": {
               "owner": "christianbirkenmaier",
               "name": "workentry-client"
@@ -52,7 +57,9 @@
         },
         {
           "name": "@electron-forge/maker-zip",
-          "platforms": ["darwin"]
+          "platforms": [
+            "darwin"
+          ]
         },
         {
           "name": "@electron-forge/maker-deb",
@@ -104,6 +111,7 @@
     "axios": "^0.21.0",
     "babel-loader": "^8.1.0",
     "bootstrap": "^4.5.3",
+    "bootstrap-switch-button-react": "^1.2.0",
     "electron-is-dev": "^1.2.0",
     "electron-squirrel-startup": "^1.0.0",
     "moment": "^2.29.1",

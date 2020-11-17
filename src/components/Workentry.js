@@ -30,6 +30,12 @@ const regeneratorRuntime = require("regenerator-runtime");
 // const WORKENTRY_URL = "https://workentry-api.herokuapp.com/api/v1/workentry";
 
 export default function Workentry({ show, handleClose, workentries, setWorkentries, isDev, workentryToUpdate }) {
+  const DEV_URLS = { workentriesUrl: DEV_WORKENTRY_API, categoriesUrl: DEV_CATEGORY_API, projectsUrl: DEV_PROJECT_API };
+  const PROD_URLS = {
+    workentriesUrl: PROD_WORKENTRY_API,
+    categoriesUrl: PROD_CATEGORY_API,
+    projectsUrl: PROD_PROJECT_API,
+  };
   let [mode, setMode] = useState("create");
   let [categories, setCategories] = useState([{ id: 0, categoryName: "C1" }]);
   let [projects, setProjects] = useState([{ id: 0, projectName: "P1" }]);
@@ -46,6 +52,11 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
   let [customInterval, setCustomInterval] = useState(null);
   let [errorState, setErrorState] = useState(false);
   let [idToUpdate, setIdToUpdate] = useState(null);
+  const [projectUrl, setProjectUrl] = useState(isDev ? DEV_PROJECT_API : PROD_PROJECT_API);
+  const [categoryUrl, setCategoryUrl] = useState(isDev ? DEV_CATEGORY_API : PROD_CATEGORY_API);
+  const [workentryUrl, setWorkentryUrl] = useState(isDev ? DEV_WORKENTRY_API : PROD_WORKENTRY_API);
+  const [urls, setUrls] = useState(isDev ? DEV_URLS : PROD_URLS);
+
   let alert = useAlert();
 
   function reset() {
@@ -59,6 +70,17 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
     setEndTimeTmp("");
     endTrack();
   }
+
+  useEffect(() => {
+    // setProjectUrl(isDev ? DEV_PROJECT_API : PROD_PROJECT_API);
+    // setCategoryUrl(isDev ? DEV_CATEGORY_API : PROD_CATEGORY_API);
+    // setWorkentryUrl(isDev ? DEV_WORKENTRY_API : PROD_WORKENTRY_API);
+    setUrls(isDev ? DEV_URLS : PROD_URLS);
+  }, [isDev]);
+
+  useEffect(() => {
+    loadCategoriesAndProjects();
+  }, [urls]);
 
   useEffect(() => {
     if (newWorkentryState == undefined) return;
@@ -114,14 +136,13 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
   async function loadCategoriesAndProjects() {
     console.log("loadCategoriesAndProjects, isDev: ", isDev);
     try {
-      let [categories, projects] = await Promise.all([
-        axios.get(isDev ? DEV_CATEGORY_API : PROD_CATEGORY_API),
-        axios.get(isDev ? DEV_PROJECT_API : PROD_PROJECT_API),
-      ]);
+      let [categories, projects] = await Promise.all([axios.get(urls.categoriesUrl), axios.get(urls.projectsUrl)]);
       setCategories(categories.data.data);
       setProjects(projects.data.data);
     } catch (err) {
       console.error(err);
+      setCategories([]);
+      setProjects([]);
       setErrorState(true);
     }
   }
@@ -165,10 +186,7 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
         untilDate: endTime,
         optionalText: optionalText || "",
       };
-      let resp = await axios.put(
-        isDev ? `${DEV_WORKENTRY_API}/${idToUpdate}` : `${PROD_WORKENTRY_API}/${idToUpdate}`,
-        updateWorkentry
-      );
+      let resp = await axios.put(`${urls.workentriesUrl}/${idToUpdate}`, updateWorkentry);
       reset();
       handleClose();
       alert.show("Zeiteintrag erfolgreich aktualisiert");
@@ -189,7 +207,7 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
         untilDate: endTime,
         optionalText: optionalText || "",
       };
-      let resp = await axios.post(isDev ? DEV_WORKENTRY_API : PROD_WORKENTRY_API, newWorkentry);
+      let resp = await axios.post(urls.workentriesUrl, newWorkentry);
       reset();
       handleClose();
       alert.show("Zeiteintrag erfolgreich gespeichert");

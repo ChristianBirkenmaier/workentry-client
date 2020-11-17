@@ -12,6 +12,8 @@ import { PROD_WORKENTRY_API, DEV_WORKENTRY_API } from "../config/api.json";
 export default function WorkentryList({ workentries, isDev, handleUpdate }) {
   // let url = "http://localhost:8080/api/v1/workentry";
   let [localWorkentries, setLocalWorkentries] = useState([]);
+  const [projectUrl, setProjectUrl] = useState(isDev ? DEV_WORKENTRY_API : PROD_WORKENTRY_API);
+
   let alert = useAlert();
 
   // useEffect(() => {
@@ -20,6 +22,10 @@ export default function WorkentryList({ workentries, isDev, handleUpdate }) {
   //         setWorkentries(JSON.parse(w));
   //     });
   // }, [url]);
+
+  useEffect(() => {
+    setProjectUrl(isDev ? DEV_WORKENTRY_API : PROD_WORKENTRY_API);
+  }, [isDev]);
 
   useEffect(() => {
     // console.log("localWorkentries: ", localWorkentries);
@@ -43,12 +49,13 @@ export default function WorkentryList({ workentries, isDev, handleUpdate }) {
 
   async function deleteWorkentry(_id) {
     try {
-      await axios.delete(isDev ? `${DEV_WORKENTRY_API}/${_id}` : `${PROD_WORKENTRY_API}/${_id}`);
+      await axios.delete(`${projectUrl}/${_id}`);
       let filteredWorkentries = localWorkentries.filter((l) => l._id != _id);
       setLocalWorkentries(filteredWorkentries);
       alert.show(`Zeiteintrag erfolgreich gelöscht`);
     } catch (err) {
       console.error("Error:", err);
+      setLocalWorkentries([]);
       alert.show("Fehler beim Löschen des Zeiteintrags");
     }
   }

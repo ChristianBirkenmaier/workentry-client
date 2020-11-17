@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import Container from "react-bootstrap/Container";
+import { Container, Dropdown } from "react-bootstrap";
 import Navbar from "react-bootstrap/Navbar";
 import { ipcRenderer } from "electron";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { hot } from "react-hot-loader";
+import BootstrapSwitchButton from "bootstrap-switch-button-react";
 
 import { useAlert } from "react-alert";
 import { BsFilePlus, BsListUl, BsGear } from "react-icons/bs";
@@ -61,8 +62,38 @@ const App = () => {
           <BsListUl />
         </Navbar.Brand>
         <Navbar.Brand>
-          {/* <BsGear /> */}
-          {isDev && <FaDev />}
+          {/* <Dropdown drop={"up"}>
+            <Dropdown.Toggle variant="warning" className="">
+              {isDev ? "Dev" : "Prod"}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item
+                onClick={() => {
+                  console.log("Setting connection to dev");
+                  setIsDev(true);
+                }}
+              >
+                Dev
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => {
+                  console.log("Setting connection to prod");
+                  setIsDev(false);
+                }}
+              >
+                Prod
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown> */}
+          <BootstrapSwitchButton
+            checked={!!isDev}
+            onlabel="Dev"
+            offlabel="Prod"
+            width={100}
+            onChange={() => {
+              setIsDev(!isDev);
+            }}
+          />
         </Navbar.Brand>
       </Navbar>
     </div>
