@@ -20,13 +20,8 @@
   "author": "CBirkenmaier",
   "license": "MIT",
   "babel": {
-    "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react"
-    ],
-    "plugins": [
-      "react-hot-loader/babel"
-    ]
+    "presets": ["@babel/preset-env", "@babel/preset-react"],
+    "plugins": ["react-hot-loader/babel"]
   },
   "config": {
     "forge": {
@@ -34,7 +29,7 @@
         {
           "name": "@electron-forge/publisher-github",
           "config": {
-            "authToken": "",
+            "authToken": "08586ec11691a79029ac219439227cb30a957289",
             "repository": {
               "owner": "christianbirkenmaier",
               "name": "workentry-client"
@@ -57,9 +52,7 @@
         },
         {
           "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
+          "platforms": ["darwin"]
         },
         {
           "name": "@electron-forge/maker-deb",

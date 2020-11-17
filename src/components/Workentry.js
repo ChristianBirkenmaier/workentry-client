@@ -112,6 +112,7 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
   }, []);
 
   async function loadCategoriesAndProjects() {
+    console.log("loadCategoriesAndProjects, isDev: ", isDev);
     try {
       let [categories, projects] = await Promise.all([
         axios.get(isDev ? DEV_CATEGORY_API : PROD_CATEGORY_API),
