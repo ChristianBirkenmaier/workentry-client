@@ -33,16 +33,30 @@ export default function WorkentryList({ workentries, isDev, handleUpdate }) {
     }
   }
 
+  function calculateDuration(t1, t2) {
+    let [hours, minutes] = t1.split(":");
+    let [hours2, minutes2] = t2.split(":");
+    hours = hours * 60;
+    let time1 = Number(hours) + Number(minutes);
+    hours2 = hours2 * 60;
+    let time2 = Number(hours2) + Number(minutes2);
+    let duration = time2 - time1;
+    let durationHours = Math.floor(duration / 60);
+    let durationMinutes = duration % 60;
+    durationMinutes = durationMinutes.toString().length < 2 ? `0${durationMinutes}` : durationMinutes;
+    return `${durationHours}:${durationMinutes} h`;
+  }
+
   return (
     <Table striped bordered hover variant="light" size="sm" style={{ tableLayout: "fixed" }}>
       <thead>
         <tr>
           <th>#</th>
-          <th>Project</th>
-          <th>Category</th>
-          <th>Optional</th>
-          <th>Start</th>
-          <th>End</th>
+          <th>Projekt</th>
+          <th>Kategorie</th>
+          <th>Kommentar</th>
+          <th>Von - Bis</th>
+          <th>Dauer</th>
           <th></th>
           <th></th>
         </tr>
@@ -54,8 +68,10 @@ export default function WorkentryList({ workentries, isDev, handleUpdate }) {
             <td>{w.project.project}</td>
             <td>{w.category.category}</td>
             <td>{w.optionalText}</td>
-            <td>{w.fromDate}</td>
-            <td>{w.untilDate}</td>
+            <td>
+              {w.fromDate} - {w.untilDate}
+            </td>
+            <td> {calculateDuration(w.fromDate, w.untilDate)}</td>
             <td>
               <Button>
                 <BsGear onClick={() => handleUpdate(w)} />

@@ -263,13 +263,13 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
       </Modal.Body>
       <Modal.Footer>
         <Button variant={isTracking ? "danger" : "secondary"} onClick={track}>
-          {isTracking ? "Stop" : "Track"}
+          {isTracking ? "Stop" : "Tracken"}
         </Button>
         <Button variant="secondary" onClick={handleClose}>
           Schließen
         </Button>
         <Button variant="secondary" onClick={reset}>
-          Reset
+          Zurücksetzen
         </Button>
         <Button variant="warning" disabled={isDisabled} onClick={mode == "update" ? updateWorkentry : createWorkentry}>
           {mode == "update" ? "Aktualisieren" : "Speichern"}
