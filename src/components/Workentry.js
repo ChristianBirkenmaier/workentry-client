@@ -183,7 +183,7 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
         <Modal.Title>{mode == "update" ? "Zeiteintrag bearbeiten" : "Neuer Zeiteintrag"}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Dropdown className="mb-3 ">
+        <Dropdown className="mb-3 " drop={"left"}>
           <Dropdown.Toggle variant="warning" className="" block>
             {selectedProject ? selectedProject.project : "Projekt"}
           </Dropdown.Toggle>
@@ -204,7 +204,7 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
           </Dropdown.Menu>
         </Dropdown>
 
-        <Dropdown className="mb-3">
+        <Dropdown className="mb-3" drop={"left"}>
           <Dropdown.Toggle variant="warning" block>
             {selectedCategory ? selectedCategory.category : "Kategorie"}
           </Dropdown.Toggle>

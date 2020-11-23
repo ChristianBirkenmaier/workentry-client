@@ -47,13 +47,7 @@ const App = () => {
         workentryToUpdate={workentryToUpdate}
       />
       <WorkentryList isDev={isDev} workentries={workentries} handleUpdate={handleUpdate} />
-      <Navbar
-        className="navbar-bottom"
-        fixed="bottom"
-        variant="light"
-        bg="light"
-        style={{ display: "flex", justifyContent: "space-between" }}
-      >
+      <Navbar className="navbar-bottom" fixed="bottom" style={{ display: "flex", justifyContent: "space-between" }}>
         <Navbar.Brand onClick={handleShow}>
           <BsFilePlus />
         </Navbar.Brand>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Table from "react-bootstrap/Table";
+import { Col, Row, Container } from "react-bootstrap";
 import axios from "axios";
 import { BsFillTrashFill, BsGear } from "react-icons/bs";
 import Button from "react-bootstrap/Button";
@@ -48,43 +48,36 @@ export default function WorkentryList({ workentries, isDev, handleUpdate }) {
   }
 
   return (
-    <Table striped bordered hover variant="light" size="sm" style={{ tableLayout: "fixed" }}>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Projekt</th>
-          <th>Kategorie</th>
-          <th>Kommentar</th>
-          <th>Von - Bis</th>
-          <th>Dauer</th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {localWorkentries.map((w) => (
-          <tr key={w._id}>
-            <td>{w._id.substring(0, 8)}</td>
-            <td>{w.project.project}</td>
-            <td>{w.category.category}</td>
-            <td>{w.optionalText}</td>
-            <td>
-              {w.fromDate} - {w.untilDate}
-            </td>
-            <td> {calculateDuration(w.fromDate, w.untilDate)}</td>
-            <td>
-              <Button>
-                <BsGear onClick={() => handleUpdate(w)} />
-              </Button>
-            </td>
-            <td>
-              <Button>
-                <BsFillTrashFill onClick={() => deleteWorkentry(w._id)} />
-              </Button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </Table>
+    <Container fluid className="data-container">
+      <Row className="data-header align-items-center" id="main-row">
+        <Col sm={1}>ID</Col>
+        <Col sm={2}>Projekt</Col>
+        <Col sm={2}>Kategorie</Col>
+        <Col sm={2}>Kommentar</Col>
+        <Col sm={2}>Von - Bis</Col>
+        <Col sm={1}>Dauer</Col>
+        <Col sm={2}></Col>
+      </Row>
+      {workentries.map((w) => (
+        <Row key={w._id} className="align-items-center">
+          <Col sm={1}>{w._id.substring(0, 8)}...</Col>
+          <Col sm={2}>{w.category ? w.category.category : "Unbekannte Kategorie"}</Col>
+          <Col sm={2}>{w.project ? w.project.project : "Unbekanntes Projekt"}</Col>
+          <Col sm={2}>{w.optionalText}</Col>
+          <Col sm={2}>
+            {w.fromDate} - {w.untilDate}
+          </Col>
+          <Col sm={1}> {calculateDuration(w.fromDate, w.untilDate)}</Col>
+          <Col sm={2}>
+            <Button variant="danger" onClick={() => deleteWorkentry(w._id)}>
+              <BsFillTrashFill />
+            </Button>
+            <Button onClick={() => handleUpdate(w)} variant="warning">
+              <BsGear />
+            </Button>
+          </Col>
+        </Row>
+      ))}
+    </Container>
   );
 }
