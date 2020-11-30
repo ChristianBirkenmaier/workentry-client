@@ -50,7 +50,7 @@ export default function WorkentryList({ workentries, isDev, handleUpdate }) {
   return (
     <Container fluid className="data-container">
       <Row className="data-header align-items-center" id="main-row">
-        <Col sm={1}>ID</Col>
+        {/* <Col sm={1}>ID</Col> */}
         <Col sm={2}>Projekt</Col>
         <Col sm={2}>Kategorie</Col>
         <Col sm={2}>Kommentar</Col>
@@ -60,7 +60,7 @@ export default function WorkentryList({ workentries, isDev, handleUpdate }) {
       </Row>
       {workentries.map((w) => (
         <Row key={w._id} className="align-items-center">
-          <Col sm={1}>{w._id.substring(0, 8)}...</Col>
+          {/* <Col sm={1}>{w._id.substring(0, 8)}...</Col> */}
           <Col sm={2}>{w.category ? w.category.category : "Unbekannte Kategorie"}</Col>
           <Col sm={2}>{w.project ? w.project.project : "Unbekanntes Projekt"}</Col>
           <Col sm={2}>{w.optionalText}</Col>
