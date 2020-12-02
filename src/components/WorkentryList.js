@@ -4,8 +4,18 @@ import axios from "axios";
 import { BsFillTrashFill, BsGear } from "react-icons/bs";
 import Button from "react-bootstrap/Button";
 import { useAlert } from "react-alert";
+import moment from "moment";
 
 import { PROD_WORKENTRY_API, DEV_WORKENTRY_API } from "../config/api.json";
+
+const checkIcon = () => (
+  <svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path
+      fillRule="evenodd"
+      d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"
+    />
+  </svg>
+);
 
 export default function WorkentryList({ workentries, isDev, handleUpdate }) {
   let [localWorkentries, setLocalWorkentries] = useState([]);
@@ -55,19 +65,21 @@ export default function WorkentryList({ workentries, isDev, handleUpdate }) {
         <Col sm={2}>Kategorie</Col>
         <Col sm={2}>Kommentar</Col>
         <Col sm={2}>Von - Bis</Col>
-        <Col sm={1}>Dauer</Col>
+        {/* <Col sm={1}>Dauer</Col> */}
+        <Col sm={2}>Extern</Col>
         <Col sm={2}></Col>
       </Row>
-      {workentries.map((w) => (
+      {localWorkentries.map((w) => (
         <Row key={w._id} className="align-items-center">
           {/* <Col sm={1}>{w._id.substring(0, 8)}...</Col> */}
           <Col sm={2}>{w.category ? w.category.category : "Unbekannte Kategorie"}</Col>
           <Col sm={2}>{w.project ? w.project.project : "Unbekanntes Projekt"}</Col>
           <Col sm={2}>{w.optionalText}</Col>
           <Col sm={2}>
-            {w.fromDate} - {w.untilDate}
+            {moment(w.fromDate).format("YYYY.MM.DD kk:mm")} {moment(w.untilDate).format("YYYY.MM.DD kk:mm")}
           </Col>
-          <Col sm={1}> {calculateDuration(w.fromDate, w.untilDate)}</Col>
+          {/* <Col sm={1}> {calculateDuration(w.fromDate, w.untilDate)}</Col> */}
+          <Col sm={2}> {w.external ? checkIcon() : ""}</Col>
           <Col sm={2}>
             <Button variant="danger" onClick={() => deleteWorkentry(w._id)}>
               <BsFillTrashFill />

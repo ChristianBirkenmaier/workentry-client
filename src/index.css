@@ -20,9 +20,9 @@ body {
 }
 
 .navbar-bottom {
-  display: flex;
+  /* display: flex;
   justify-content: space-between;
-  padding: 0;
+  padding: 0; */
   background-color: #ffb600;
 }
 
@@ -81,4 +81,13 @@ body {
 
 .App-link {
   color: #61dafb;
+}
+
+.dropdown-menu {
+  max-height: 75vh;
+  overflow: auto;
+}
+
+.modal-dialog {
+  max-width: 600px;
 }
