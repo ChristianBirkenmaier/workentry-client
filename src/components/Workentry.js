@@ -139,7 +139,10 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
   }
 
   async function updateWorkentry() {
-    return;
+    if (!isDev) {
+      alert.show("Vorsicht, posten unter neuer Version an Prod DB kann zu Fehlern im Livesystem führen");
+      return;
+    }
     try {
       let updateWorkentry = {
         project: selectedProject._id,
@@ -161,6 +164,10 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
   }
 
   async function createWorkentry() {
+    if (!isDev) {
+      alert.show("Vorsicht, posten unter neuer Version an Prod DB kann zu Fehlern im Livesystem führen");
+      return;
+    }
     try {
       let newWorkentry = {
         project: selectedProject._id,
@@ -171,13 +178,6 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
         external: isExternal,
       };
       console.log(newWorkentry);
-
-      //
-      setWorkentries([...workentries, newWorkentry]);
-
-      //
-
-      return;
 
       let resp = await axios.post(urls.workentriesUrl, newWorkentry);
       reset();
