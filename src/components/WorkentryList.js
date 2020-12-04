@@ -17,8 +17,8 @@ const checkIcon = () => (
   </svg>
 );
 
-export default function WorkentryList({ workentries, isDev, handleUpdate }) {
-  let [localWorkentries, setLocalWorkentries] = useState([]);
+export default function WorkentryList({ workentries, setWorkentries, isDev, handleUpdate }) {
+  // let [localWorkentries, setLocalWorkentries] = useState([]);
   const [projectUrl, setProjectUrl] = useState(isDev ? DEV_WORKENTRY_API : PROD_WORKENTRY_API);
 
   let alert = useAlert();
@@ -26,15 +26,15 @@ export default function WorkentryList({ workentries, isDev, handleUpdate }) {
     setProjectUrl(isDev ? DEV_WORKENTRY_API : PROD_WORKENTRY_API);
   }, [isDev]);
 
-  useEffect(() => {
-    setLocalWorkentries(workentries);
-  }, [workentries]);
+  // useEffect(() => {
+  //   setWorkentries(workentries);
+  // }, [workentries]);
 
   async function deleteWorkentry(_id) {
     try {
       await axios.delete(`${projectUrl}/${_id}`);
-      let filteredWorkentries = localWorkentries.filter((l) => l._id != _id);
-      setLocalWorkentries(filteredWorkentries);
+      workentries = workentries.filter((l) => l._id != _id);
+      setWorkentries(workentries);
       alert.show(`Zeiteintrag erfolgreich gelöscht`);
     } catch (err) {
       console.error("Error:", err);
@@ -58,33 +58,35 @@ export default function WorkentryList({ workentries, isDev, handleUpdate }) {
   }
 
   return (
-    <Container fluid className="data-container">
+    <Container fluid className="data-container text-center">
       <Row className="data-header align-items-center" id="main-row">
         {/* <Col sm={1}>ID</Col> */}
         <Col sm={2}>Projekt</Col>
         <Col sm={2}>Kategorie</Col>
         <Col sm={2}>Kommentar</Col>
-        <Col sm={2}>Von - Bis</Col>
-        {/* <Col sm={1}>Dauer</Col> */}
-        <Col sm={2}>Extern</Col>
-        <Col sm={2}></Col>
+        <Col sm={1}>Datum</Col>
+        <Col sm={1}>Von</Col>
+        <Col sm={1}>Bis</Col>
+        <Col sm={1}>Dauer</Col>
+        <Col sm={1}>Extern</Col>
+        <Col sm={1}></Col>
       </Row>
-      {localWorkentries.map((w) => (
+      {workentries.map((w) => (
         <Row key={w._id} className="align-items-center">
           {/* <Col sm={1}>{w._id.substring(0, 8)}...</Col> */}
           <Col sm={2}>{w.category ? w.category.category : "Unbekannte Kategorie"}</Col>
           <Col sm={2}>{w.project ? w.project.project : "Unbekanntes Projekt"}</Col>
           <Col sm={2}>{w.optionalText}</Col>
-          <Col sm={2}>
-            {moment(w.fromDate).format("YYYY.MM.DD kk:mm")} {moment(w.untilDate).format("YYYY.MM.DD kk:mm")}
-          </Col>
-          {/* <Col sm={1}> {calculateDuration(w.fromDate, w.untilDate)}</Col> */}
-          <Col sm={2}> {w.external ? checkIcon() : ""}</Col>
-          <Col sm={2}>
+          <Col sm={1}>{w.date.replaceAll("-", ".")}</Col>
+          <Col sm={1}>{w.start}</Col>
+          <Col sm={1}>{w.end}</Col>
+          <Col sm={1}> {calculateDuration(w.start, w.end)}</Col>
+          <Col sm={1}> {w.external ? checkIcon() : ""}</Col>
+          <Col sm={1}>
             <Button variant="danger" onClick={() => deleteWorkentry(w._id)}>
               <BsFillTrashFill />
             </Button>
-            <Button onClick={() => handleUpdate(w)} variant="warning">
+            <Button onClick={() => handleUpdate(w)} variant="dark">
               <BsGear />
             </Button>
           </Col>

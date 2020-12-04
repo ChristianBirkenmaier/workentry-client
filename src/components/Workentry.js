@@ -38,6 +38,7 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
   let [startTime, setStartTime] = useState(undefined);
   let [endTime, setEndTime] = useState(undefined);
   let [endTimeTmp, setEndTimeTmp] = useState("");
+  let [date, setDate] = useState("");
   let [isTracking, setIsTracking] = useState(false);
   let [isDisabled, setIsDisabled] = useState(true);
   let [customInterval, setCustomInterval] = useState(null);
@@ -50,6 +51,7 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
 
   function reset() {
     setMode("create");
+    endTrack();
     setSelectedCategory(undefined);
     setSelectedProject(undefined);
     setOptionalText("");
@@ -57,7 +59,7 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
     setEndTime(undefined);
     setStartTimeTmp("");
     setEndTimeTmp("");
-    endTrack();
+    setDate("");
   }
 
   useEffect(() => {
@@ -123,13 +125,13 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
   }
   function startTrack() {
     setIsTracking(true);
-    console.log("startTrack", moment().format("YYYY-MM-DDTkk:mm"));
-    setStartTime(moment().format("YYYY-MM-DDTkk:mm"));
-    setStartTimeTmp(moment().format("YYYY-MM-DDTkk:mm"));
+    console.log("startTrack", moment().format("HH:mm"));
+    setStartTime(moment().format("HH:mm"));
+    setStartTimeTmp(moment().format("HH:mm"));
     let interval = setInterval(() => {
       let now = new Date();
-      setEndTimeTmp(moment().format("YYYY-MM-DDTkk:mm"));
-      setEndTime(moment().format("YYYY-MM-DDTkk:mm"));
+      setEndTimeTmp(moment().format("HH:mm"));
+      setEndTime(moment().format("HH:mm"));
     }, 1000);
     setCustomInterval(interval);
   }
@@ -139,6 +141,9 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
   }
 
   async function updateWorkentry() {
+    // let [date, start] = startTime.split("T");
+    // let [_, end] = endTime.split("T");
+    // console.log(startTime, date, start);
     if (!isDev) {
       alert.show("Vorsicht, posten unter neuer Version an Prod DB kann zu Fehlern im Livesystem führen");
       return;
@@ -147,9 +152,13 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
       let updateWorkentry = {
         project: selectedProject._id,
         category: selectedCategory._id,
-        fromDate: startTime,
-        untilDate: endTime,
+        // fromDate: startTime,
+        // untilDate: endTime,
+        date,
+        start: startTime,
+        end: endTime,
         optionalText: optionalText || "",
+        external: isExternal,
       };
       let resp = await axios.put(`${urls.workentriesUrl}/${idToUpdate}`, updateWorkentry);
       reset();
@@ -164,6 +173,11 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
   }
 
   async function createWorkentry() {
+    // let [date, start] = startTime.split("T");
+    // let [_, end] = endTime.split("T");
+    // console.log(startTime, date, start);
+    console.log(date, startTime, endTime, startTimeTmp, endTimeTmp);
+
     if (!isDev) {
       alert.show("Vorsicht, posten unter neuer Version an Prod DB kann zu Fehlern im Livesystem führen");
       return;
@@ -172,8 +186,11 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
       let newWorkentry = {
         project: selectedProject._id,
         category: selectedCategory._id,
-        fromDate: startTime,
-        untilDate: endTime,
+        // fromDate: startTime,
+        // untilDate: endTime,
+        date,
+        start: startTime,
+        end: endTime,
         optionalText: optionalText || "",
         external: isExternal,
       };
@@ -248,29 +265,38 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
         </Dropdown>
 
         <InputGroup className="mb-3">
-          <InputGroup.Prepend>
+          {/* <InputGroup.Prepend>
             <InputGroup.Text>
               <BsFillClockFill />
             </InputGroup.Text>
-          </InputGroup.Prepend>
+          </InputGroup.Prepend> */}
+          <FormControl
+            placeholder="Datum"
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            // onBlur={(e) => {
+            //   setStartTime(moment(startTimeTmp).format("HH:mm"));
+            // }}
+          />
           <FormControl
             placeholder="Von"
-            type="datetime-local"
+            type="time"
             value={startTimeTmp}
             onChange={(e) => setStartTimeTmp(e.target.value)}
             onBlur={(e) => {
-              setStartTime(moment(startTimeTmp).format("YYYY-MM-DDTkk:mm"));
+              setStartTime(moment(startTimeTmp).format("HH:mm"));
             }}
           />
-          <InputGroup.Text>
+          {/* <InputGroup.Text>
             <BsFillForwardFill />
-          </InputGroup.Text>
+          </InputGroup.Text> */}
           <FormControl
-            onBlur={(e) => setEndTime(moment(endTimeTmp).format("YYYY-MM-DDTkk:mm"))}
+            onBlur={(e) => setEndTime(moment(endTimeTmp).format("HH:mm"))}
             onChange={(e) => setEndTimeTmp(e.target.value)}
             value={endTimeTmp}
             placeholder="Bis"
-            type="datetime-local"
+            type="time"
           />
         </InputGroup>
         <InputGroup className="mb-3">

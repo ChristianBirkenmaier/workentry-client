@@ -46,7 +46,7 @@ const App = () => {
         setWorkentries={setWorkentries}
         workentryToUpdate={workentryToUpdate}
       />
-      <WorkentryList isDev={isDev} workentries={workentries} handleUpdate={handleUpdate} />
+      <WorkentryList isDev={isDev} workentries={workentries} setWorkentries={setWorkentries} handleUpdate={handleUpdate} />
       <Navbar className="navbar-bottom" fixed="bottom" style={{ display: "flex", justifyContent: "space-between" }}>
         <Navbar.Brand onClick={handleShow}>
           <BsFilePlus />
