@@ -7,7 +7,7 @@ body {
 }
 
 .App-main {
-  background-color: #ffb600;
+  background-color: white;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -16,13 +16,14 @@ body {
   align-content: flex-start;
   /* font-size: calc(10px + 2vmin); */
   font-size: 1rem;
-  color: white;
+  color: black;
 }
 
 .navbar-bottom {
-  display: flex;
+  /* display: flex;
   justify-content: space-between;
-  padding: 0;
+  padding: 0; */
+  background-color: #ffb600;
 }
 
 .navbar-bottom span {
@@ -44,4 +45,49 @@ body {
 .noerpel:hover {
   background-color: #ffc42d;
   border: 1px solid #ffc42d;
+}
+
+.data-container {
+  background-color: white;
+}
+
+/* .data-container button {
+  margin: 5px;
+  width: 150px;
+} */
+
+.row {
+  background-color: white;
+}
+.row:first-child {
+  min-height: 50px;
+}
+.row:nth-child(odd) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+#main-row {
+  background-color: #ffb600;
+}
+
+.data-header {
+  font-weight: bold;
+  background-color: #ffb600;
+}
+
+.nav-link {
+  font-weight: bold;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.dropdown-menu {
+  max-height: 75vh;
+  overflow: auto;
+}
+
+.modal-dialog {
+  max-width: 600px;
 }
