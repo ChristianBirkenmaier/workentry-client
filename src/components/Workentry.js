@@ -128,6 +128,7 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
     console.log("startTrack", moment().format("HH:mm"));
     setStartTime(moment().format("HH:mm"));
     setStartTimeTmp(moment().format("HH:mm"));
+    setDate(moment().format("YYYY-MM-DD"));
     let interval = setInterval(() => {
       let now = new Date();
       setEndTimeTmp(moment().format("HH:mm"));
@@ -285,14 +286,15 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
             value={startTimeTmp}
             onChange={(e) => setStartTimeTmp(e.target.value)}
             onBlur={(e) => {
-              setStartTime(moment(startTimeTmp).format("HH:mm"));
+              setStartTime(startTimeTmp);
             }}
           />
           {/* <InputGroup.Text>
+          
             <BsFillForwardFill />
           </InputGroup.Text> */}
           <FormControl
-            onBlur={(e) => setEndTime(moment(endTimeTmp).format("HH:mm"))}
+            onBlur={(e) => setEndTime(endTimeTmp)}
             onChange={(e) => setEndTimeTmp(e.target.value)}
             value={endTimeTmp}
             placeholder="Bis"
