@@ -1,7 +1,7 @@
 {
   "name": "noerpel-zeiteintraege",
   "productName": "Noerpel-Zeiteintraege",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Noerpel-Zeiteintraege",
   "main": ".webpack/main",
   "scripts": {
@@ -29,7 +29,7 @@
         {
           "name": "@electron-forge/publisher-github",
           "config": {
-            "authToken": " ",
+            "authToken": "",
             "repository": {
               "owner": "christianbirkenmaier",
               "name": "workentry-client"
