@@ -18,17 +18,12 @@ const checkIcon = () => (
 );
 
 export default function WorkentryList({ workentries, setWorkentries, isDev, handleUpdate }) {
-  // let [localWorkentries, setLocalWorkentries] = useState([]);
   const [projectUrl, setProjectUrl] = useState(isDev ? DEV_WORKENTRY_API : PROD_WORKENTRY_API);
 
   let alert = useAlert();
   useEffect(() => {
     setProjectUrl(isDev ? DEV_WORKENTRY_API : PROD_WORKENTRY_API);
   }, [isDev]);
-
-  // useEffect(() => {
-  //   setWorkentries(workentries);
-  // }, [workentries]);
 
   async function deleteWorkentry(_id) {
     try {
@@ -60,7 +55,6 @@ export default function WorkentryList({ workentries, setWorkentries, isDev, hand
   return (
     <Container fluid className="data-container text-center">
       <Row className="data-header align-items-center" id="main-row">
-        {/* <Col sm={1}>ID</Col> */}
         <Col sm={2}>Projekt</Col>
         <Col sm={2}>Kategorie</Col>
         <Col sm={2}>Kommentar</Col>
@@ -73,7 +67,6 @@ export default function WorkentryList({ workentries, setWorkentries, isDev, hand
       </Row>
       {workentries.map((w) => (
         <Row key={w._id} className="align-items-center">
-          {/* <Col sm={1}>{w._id.substring(0, 8)}...</Col> */}
           <Col sm={2}>{w.category ? w.category.category : "Unbekannte Kategorie"}</Col>
           <Col sm={2}>{w.project ? w.project.project : "Unbekanntes Projekt"}</Col>
           <Col sm={2}>{w.optionalText}</Col>
