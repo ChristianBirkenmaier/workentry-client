@@ -4,7 +4,6 @@ import axios from "axios";
 import { BsFillTrashFill, BsGear } from "react-icons/bs";
 import Button from "react-bootstrap/Button";
 import { useAlert } from "react-alert";
-import moment from "moment";
 
 import { PROD_WORKENTRY_API, DEV_WORKENTRY_API } from "../config/api.json";
 
