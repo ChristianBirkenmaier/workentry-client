@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from "react";
-// import Button from "react-bootstrap/Button";
-// import Dropdown from "react-bootstrap/Dropdown";
 import moment from "moment";
 import axios from "axios";
 import { useAlert } from "react-alert";
-import { ipcRenderer } from "electron";
-import { BsFillForwardFill, BsFillClockFill } from "react-icons/bs";
-// import Modal from "react-bootstrap/Modal";
-// import InputGroup from "react-bootstrap/InputGroup";
-// import FormControl from "react-bootstrap/FormControl";
 import { ButtonGroup, FormControl, InputGroup, Modal, Dropdown, Button } from "react-bootstrap";
 import {
   PROD_WORKENTRY_API,
@@ -72,7 +65,6 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
 
   useEffect(() => {
     if (newWorkentryState == undefined) return;
-    // ipcRenderer.send("workentrycreate:new", newWorkentryState);
     handleClose();
   }, [newWorkentryState]);
 
@@ -142,19 +134,10 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
   }
 
   async function updateWorkentry() {
-    // let [date, start] = startTime.split("T");
-    // let [_, end] = endTime.split("T");
-    // console.log(startTime, date, start);
-    if (!isDev) {
-      alert.show("Vorsicht, posten unter neuer Version an Prod DB kann zu Fehlern im Livesystem führen");
-      return;
-    }
     try {
       let updateWorkentry = {
         project: selectedProject._id,
         category: selectedCategory._id,
-        // fromDate: startTime,
-        // untilDate: endTime,
         date,
         start: startTime,
         end: endTime,
@@ -174,28 +157,16 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
   }
 
   async function createWorkentry() {
-    // let [date, start] = startTime.split("T");
-    // let [_, end] = endTime.split("T");
-    // console.log(startTime, date, start);
-    console.log(date, startTime, endTime, startTimeTmp, endTimeTmp);
-
-    if (!isDev) {
-      alert.show("Vorsicht, posten unter neuer Version an Prod DB kann zu Fehlern im Livesystem führen");
-      return;
-    }
     try {
       let newWorkentry = {
         project: selectedProject._id,
         category: selectedCategory._id,
-        // fromDate: startTime,
-        // untilDate: endTime,
         date,
         start: startTime,
         end: endTime,
         optionalText: optionalText || "",
         external: isExternal,
       };
-      console.log(newWorkentry);
 
       let resp = await axios.post(urls.workentriesUrl, newWorkentry);
       reset();
@@ -266,20 +237,7 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
         </Dropdown>
 
         <InputGroup className="mb-3">
-          {/* <InputGroup.Prepend>
-            <InputGroup.Text>
-              <BsFillClockFill />
-            </InputGroup.Text>
-          </InputGroup.Prepend> */}
-          <FormControl
-            placeholder="Datum"
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            // onBlur={(e) => {
-            //   setStartTime(moment(startTimeTmp).format("HH:mm"));
-            // }}
-          />
+          <FormControl placeholder="Datum" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           <FormControl
             placeholder="Von"
             type="time"
@@ -289,10 +247,6 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
               setStartTime(startTimeTmp);
             }}
           />
-          {/* <InputGroup.Text>
-          
-            <BsFillForwardFill />
-          </InputGroup.Text> */}
           <FormControl
             onBlur={(e) => setEndTime(endTimeTmp)}
             onChange={(e) => setEndTimeTmp(e.target.value)}
