@@ -20,8 +20,13 @@
   "author": "CBirkenmaier",
   "license": "MIT",
   "babel": {
-    "presets": ["@babel/preset-env", "@babel/preset-react"],
-    "plugins": ["react-hot-loader/babel"]
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ],
+    "plugins": [
+      "react-hot-loader/babel"
+    ]
   },
   "config": {
     "forge": {
@@ -52,7 +57,9 @@
         },
         {
           "name": "@electron-forge/maker-zip",
-          "platforms": ["darwin"]
+          "platforms": [
+            "darwin"
+          ]
         },
         {
           "name": "@electron-forge/maker-deb",
