@@ -4,7 +4,6 @@ import axios from "axios";
 import { BsFillTrashFill, BsGear } from "react-icons/bs";
 import Button from "react-bootstrap/Button";
 import { useAlert } from "react-alert";
-import moment from "moment";
 
 import { PROD_WORKENTRY_API, DEV_WORKENTRY_API } from "../config/api.json";
 
@@ -18,29 +17,23 @@ const checkIcon = () => (
 );
 
 export default function WorkentryList({ workentries, setWorkentries, isDev, handleUpdate }) {
-    // let [localWorkentries, setLocalWorkentries] = useState([]);
-    const [projectUrl, setProjectUrl] = useState(isDev ? DEV_WORKENTRY_API : PROD_WORKENTRY_API);
+  const [projectUrl, setProjectUrl] = useState(isDev ? DEV_WORKENTRY_API : PROD_WORKENTRY_API);
 
     let alert = useAlert();
     useEffect(() => {
         setProjectUrl(isDev ? DEV_WORKENTRY_API : PROD_WORKENTRY_API);
     }, [isDev]);
 
-    // useEffect(() => {
-    //   setWorkentries(workentries);
-    // }, [workentries]);
-
-    async function deleteWorkentry(_id) {
-        try {
-            await axios.delete(`${projectUrl}/${_id}`);
-            workentries = workentries.filter((l) => l._id != _id);
-            setWorkentries(workentries);
-            alert.show(`Zeiteintrag erfolgreich gelöscht`);
-        } catch (err) {
-            console.error("Error:", err);
-            setLocalWorkentries([]);
-            alert.show("Fehler beim Löschen des Zeiteintrags");
-        }
+  async function deleteWorkentry(_id) {
+    try {
+      await axios.delete(`${projectUrl}/${_id}`);
+      workentries = workentries.filter((l) => l._id != _id);
+      setWorkentries(workentries);
+      alert.show(`Zeiteintrag erfolgreich gelöscht`);
+    } catch (err) {
+      console.error("Error:", err);
+      setLocalWorkentries([]);
+      alert.show("Fehler beim Löschen des Zeiteintrags");
     }
 
     function calculateDuration(t1, t2) {
@@ -57,41 +50,39 @@ export default function WorkentryList({ workentries, setWorkentries, isDev, hand
         return `${durationHours}:${durationMinutes} h`;
     }
 
-    return (
-        <Container fluid className="data-container text-center">
-            <Row className="data-header align-items-center" id="main-row">
-                {/* <Col sm={1}>ID</Col> */}
-                <Col sm={2}>Projekt</Col>
-                <Col sm={2}>Kategorie</Col>
-                <Col sm={2}>Kommentar</Col>
-                <Col sm={1}>Datum</Col>
-                <Col sm={1}>Von</Col>
-                <Col sm={1}>Bis</Col>
-                <Col sm={1}>Dauer</Col>
-                <Col sm={1}>Extern</Col>
-                <Col sm={1}></Col>
-            </Row>
-            {workentries.map((w) => (
-                <Row key={w._id} className="align-items-center">
-                    {/* <Col sm={1}>{w._id.substring(0, 8)}...</Col> */}
-                    <Col sm={2}>{w.category ? w.category.category : "Unbekannte Kategorie"}</Col>
-                    <Col sm={2}>{w.project ? w.project.project : "Unbekanntes Projekt"}</Col>
-                    <Col sm={2}>{w.optionalText}</Col>
-                    <Col sm={1}>{w.date.replaceAll("-", ".")}</Col>
-                    <Col sm={1}>{w.start}</Col>
-                    <Col sm={1}>{w.end}</Col>
-                    <Col sm={1}> {calculateDuration(w.start, w.end)}</Col>
-                    <Col sm={1}> {w.external ? checkIcon() : ""}</Col>
-                    <Col sm={1}>
-                        <Button variant="danger" onClick={() => deleteWorkentry(w._id)}>
-                            <BsFillTrashFill />
-                        </Button>
-                        <Button onClick={() => handleUpdate(w)} variant="dark">
-                            <BsGear />
-                        </Button>
-                    </Col>
-                </Row>
-            ))}
-        </Container>
-    );
+  return (
+    <Container fluid className="data-container text-center">
+      <Row className="data-header align-items-center" id="main-row">
+        <Col sm={2}>Projekt</Col>
+        <Col sm={2}>Kategorie</Col>
+        <Col sm={2}>Kommentar</Col>
+        <Col sm={1}>Datum</Col>
+        <Col sm={1}>Von</Col>
+        <Col sm={1}>Bis</Col>
+        <Col sm={1}>Dauer</Col>
+        <Col sm={1}>Extern</Col>
+        <Col sm={1}></Col>
+      </Row>
+      {workentries.map((w) => (
+        <Row key={w._id} className="align-items-center">
+          <Col sm={2}>{w.category ? w.category.category : "Unbekannte Kategorie"}</Col>
+          <Col sm={2}>{w.project ? w.project.project : "Unbekanntes Projekt"}</Col>
+          <Col sm={2}>{w.optionalText}</Col>
+          <Col sm={1}>{w.date.replaceAll("-", ".")}</Col>
+          <Col sm={1}>{w.start}</Col>
+          <Col sm={1}>{w.end}</Col>
+          <Col sm={1}> {calculateDuration(w.start, w.end)}</Col>
+          <Col sm={1}> {w.external ? checkIcon() : ""}</Col>
+          <Col sm={1}>
+            <Button variant="danger" onClick={() => deleteWorkentry(w._id)}>
+              <BsFillTrashFill />
+            </Button>
+            <Button onClick={() => handleUpdate(w)} variant="dark">
+              <BsGear />
+            </Button>
+          </Col>
+        </Row>
+      ))}
+    </Container>
+  );
 }

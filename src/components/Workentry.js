@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from "react";
-// import Button from "react-bootstrap/Button";
-// import Dropdown from "react-bootstrap/Dropdown";
 import moment from "moment";
 import axios from "axios";
 import { useAlert } from "react-alert";
-import { ipcRenderer } from "electron";
-import { BsFillForwardFill, BsFillClockFill } from "react-icons/bs";
-// import Modal from "react-bootstrap/Modal";
-// import InputGroup from "react-bootstrap/InputGroup";
-// import FormControl from "react-bootstrap/FormControl";
 import { ButtonGroup, FormControl, InputGroup, Modal, Dropdown, Button } from "react-bootstrap";
 import {
     PROD_WORKENTRY_API,
@@ -70,11 +63,10 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
         loadCategoriesAndProjects();
     }, [urls]);
 
-    useEffect(() => {
-        if (newWorkentryState == undefined) return;
-        // ipcRenderer.send("workentrycreate:new", newWorkentryState);
-        handleClose();
-    }, [newWorkentryState]);
+  useEffect(() => {
+    if (newWorkentryState == undefined) return;
+    handleClose();
+  }, [newWorkentryState]);
 
     useEffect(() => {
         if (!workentryToUpdate) return;
@@ -123,55 +115,58 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
             startTrack();
         }
     }
-    function startTrack() {
-        setIsTracking(true);
-        console.log("startTrack", moment().format("HH:mm"));
-        setStartTime(moment().format("HH:mm"));
-        setStartTimeTmp(moment().format("HH:mm"));
-        setDate(moment().format("YYYY-MM-DD"));
-        let interval = setInterval(() => {
-            let now = new Date();
-            setEndTimeTmp(moment().format("HH:mm"));
-            setEndTime(moment().format("HH:mm"));
-        }, 1000);
-        setCustomInterval(interval);
-    }
-    function endTrack() {
-        setIsTracking(false);
-        clearInterval(customInterval);
+  }
+  function startTrack() {
+    setIsTracking(true);
+    console.log("startTrack", moment().format("HH:mm"));
+    setStartTime(moment().format("HH:mm"));
+    setStartTimeTmp(moment().format("HH:mm"));
+    setDate(moment().format("YYYY-MM-DD"));
+    let interval = setInterval(() => {
+      let now = new Date();
+      setEndTimeTmp(moment().format("HH:mm"));
+      setEndTime(moment().format("HH:mm"));
+    }, 1000);
+    setCustomInterval(interval);
+  }
+  function endTrack() {
+    setIsTracking(false);
+    clearInterval(customInterval);
+  }
+
+  async function updateWorkentry() {
+    try {
+      let updateWorkentry = {
+        project: selectedProject._id,
+        category: selectedCategory._id,
+        date,
+        start: startTime,
+        end: endTime,
+        optionalText: optionalText || "",
+        external: isExternal,
+      };
+      let resp = await axios.put(`${urls.workentriesUrl}/${idToUpdate}`, updateWorkentry);
+      reset();
+      handleClose();
+      alert.show("Zeiteintrag erfolgreich aktualisiert");
+      let recievedData = resp && resp.data && resp.data.data && resp.data.data[0];
+      let filteredWorkentries = workentries.filter((w) => w._id != recievedData._id);
+      setWorkentries([...filteredWorkentries, recievedData]);
+    } catch (err) {
+      console.error(err);
     }
 
-    async function updateWorkentry() {
-        // let [date, start] = startTime.split("T");
-        // let [_, end] = endTime.split("T");
-        // console.log(startTime, date, start);
-        if (!isDev) {
-            alert.show("Vorsicht, posten unter neuer Version an Prod DB kann zu Fehlern im Livesystem führen");
-            return;
-        }
-        try {
-            let updateWorkentry = {
-                project: selectedProject._id,
-                category: selectedCategory._id,
-                // fromDate: startTime,
-                // untilDate: endTime,
-                date,
-                start: startTime,
-                end: endTime,
-                optionalText: optionalText || "",
-                external: isExternal,
-            };
-            let resp = await axios.put(`${urls.workentriesUrl}/${idToUpdate}`, updateWorkentry);
-            reset();
-            handleClose();
-            alert.show("Zeiteintrag erfolgreich aktualisiert");
-            let recievedData = resp && resp.data && resp.data.data && resp.data.data[0];
-            let filteredWorkentries = workentries.filter((w) => w._id != recievedData._id);
-            setWorkentries([...filteredWorkentries, recievedData]);
-        } catch (err) {
-            console.error(err);
-        }
-    }
+  async function createWorkentry() {
+    try {
+      let newWorkentry = {
+        project: selectedProject._id,
+        category: selectedCategory._id,
+        date,
+        start: startTime,
+        end: endTime,
+        optionalText: optionalText || "",
+        external: isExternal,
+      };
 
     async function createWorkentry() {
         // let [date, start] = startTime.split("T");
@@ -265,75 +260,58 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
                     </Dropdown.Menu>
                 </Dropdown>
 
-                <InputGroup className="mb-3">
-                    {/* <InputGroup.Prepend>
-            <InputGroup.Text>
-              <BsFillClockFill />
-            </InputGroup.Text>
-          </InputGroup.Prepend> */}
-                    <FormControl
-                        placeholder="Datum"
-                        type="date"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
-                        // onBlur={(e) => {
-                        //   setStartTime(moment(startTimeTmp).format("HH:mm"));
-                        // }}
-                    />
-                    <FormControl
-                        placeholder="Von"
-                        type="time"
-                        value={startTimeTmp}
-                        onChange={(e) => setStartTimeTmp(e.target.value)}
-                        onBlur={(e) => {
-                            setStartTime(startTimeTmp);
-                        }}
-                    />
-                    {/* <InputGroup.Text>
-          
-            <BsFillForwardFill />
-          </InputGroup.Text> */}
-                    <FormControl
-                        onBlur={(e) => setEndTime(endTimeTmp)}
-                        onChange={(e) => setEndTimeTmp(e.target.value)}
-                        value={endTimeTmp}
-                        placeholder="Bis"
-                        type="time"
-                    />
-                </InputGroup>
-                <InputGroup className="mb-3">
-                    <FormControl
-                        onChange={(e) => setOptionalText(e.target.value)}
-                        value={optionalText}
-                        placeholder="Kommentar"
-                        aria-label="Kommentar"
-                        aria-describedby="basic-addon2"
-                        as="textarea"
-                    />
-                </InputGroup>
-                <InputGroup className="mb-3">
-                    <InputGroup.Prepend>
-                        <InputGroup.Text>Extern</InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <InputGroup.Checkbox checked={!!isExternal} aria-label="Extern" onChange={() => setisExternal(!isExternal)} />
-                </InputGroup>
-            </Modal.Body>
-            <Modal.Footer>
-                <ButtonGroup aria-label="Basic example">
-                    <Button variant={isTracking ? "danger" : "secondary"} onClick={track}>
-                        {isTracking ? "Stop" : "Tracken"}
-                    </Button>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Schließen
-                    </Button>
-                    <Button variant="secondary" onClick={reset}>
-                        Zurücksetzen
-                    </Button>
-                    <Button variant="warning" disabled={isDisabled} onClick={mode == "update" ? updateWorkentry : createWorkentry}>
-                        {mode == "update" ? "Aktualisieren" : "Speichern"}
-                    </Button>
-                </ButtonGroup>
-            </Modal.Footer>
-        </Modal>
-    );
+        <InputGroup className="mb-3">
+          <FormControl placeholder="Datum" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          <FormControl
+            placeholder="Von"
+            type="time"
+            value={startTimeTmp}
+            onChange={(e) => setStartTimeTmp(e.target.value)}
+            onBlur={(e) => {
+              setStartTime(startTimeTmp);
+            }}
+          />
+          <FormControl
+            onBlur={(e) => setEndTime(endTimeTmp)}
+            onChange={(e) => setEndTimeTmp(e.target.value)}
+            value={endTimeTmp}
+            placeholder="Bis"
+            type="time"
+          />
+        </InputGroup>
+        <InputGroup className="mb-3">
+          <FormControl
+            onChange={(e) => setOptionalText(e.target.value)}
+            value={optionalText}
+            placeholder="Kommentar"
+            aria-label="Kommentar"
+            aria-describedby="basic-addon2"
+            as="textarea"
+          />
+        </InputGroup>
+        <InputGroup className="mb-3">
+          <InputGroup.Prepend>
+            <InputGroup.Text>Extern</InputGroup.Text>
+          </InputGroup.Prepend>
+          <InputGroup.Checkbox checked={!!isExternal} aria-label="Extern" onChange={() => setisExternal(!isExternal)} />
+        </InputGroup>
+      </Modal.Body>
+      <Modal.Footer>
+        <ButtonGroup aria-label="Basic example">
+          <Button variant={isTracking ? "danger" : "secondary"} onClick={track}>
+            {isTracking ? "Stop" : "Tracken"}
+          </Button>
+          <Button variant="secondary" onClick={handleClose}>
+            Schließen
+          </Button>
+          <Button variant="secondary" onClick={reset}>
+            Zurücksetzen
+          </Button>
+          <Button variant="warning" disabled={isDisabled} onClick={mode == "update" ? updateWorkentry : createWorkentry}>
+            {mode == "update" ? "Aktualisieren" : "Speichern"}
+          </Button>
+        </ButtonGroup>
+      </Modal.Footer>
+    </Modal>
+  );
 }
