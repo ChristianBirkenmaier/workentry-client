@@ -71,15 +71,15 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
     useEffect(() => {
         if (!workentryToUpdate) return;
         setMode("update");
-        console.log("workentryToUpdate", workentryToUpdate);
-        const { _id, category, project, fromDate, untilDate, optionalText } = workentryToUpdate;
+        const { _id, category, project, date, start, end, optionalText } = workentryToUpdate;
         setIdToUpdate(_id);
         setSelectedCategory(category);
         setSelectedProject(project);
-        setStartTime(fromDate);
-        setStartTimeTmp(fromDate);
-        setEndTime(untilDate);
-        setEndTimeTmp(untilDate);
+        setDate(date);
+        setStartTime(start);
+        setStartTimeTmp(start);
+        setEndTime(end);
+        setEndTimeTmp(end);
         setOptionalText(optionalText);
     }, [workentryToUpdate]);
 
@@ -88,7 +88,6 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
     }, []);
 
     async function loadCategoriesAndProjects() {
-        console.log("loadCategoriesAndProjects, isDev: ", isDev);
         try {
             let [categories, projects] = await Promise.all([axios.get(urls.categoriesUrl), axios.get(urls.projectsUrl)]);
             setCategories(categories.data.data);
@@ -118,7 +117,6 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
 
     function startTrack() {
         setIsTracking(true);
-        console.log("startTrack", moment().format("HH:mm"));
         setStartTime(moment().format("HH:mm"));
         setStartTimeTmp(moment().format("HH:mm"));
         setDate(moment().format("YYYY-MM-DD"));
@@ -158,28 +156,16 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
     }
 
     async function createWorkentry() {
-        // let [date, start] = startTime.split("T");
-        // let [_, end] = endTime.split("T");
-        // console.log(startTime, date, start);
-        console.log(date, startTime, endTime, startTimeTmp, endTimeTmp);
-
-        if (!isDev) {
-            alert.show("Vorsicht, posten unter neuer Version an Prod DB kann zu Fehlern im Livesystem führen");
-            return;
-        }
         try {
             let newWorkentry = {
                 project: selectedProject._id,
                 category: selectedCategory._id,
-                // fromDate: startTime,
-                // untilDate: endTime,
                 date,
                 start: startTime,
                 end: endTime,
                 optionalText: optionalText || "",
                 external: isExternal,
             };
-            console.log(newWorkentry);
 
             let resp = await axios.post(urls.workentriesUrl, newWorkentry);
             reset();

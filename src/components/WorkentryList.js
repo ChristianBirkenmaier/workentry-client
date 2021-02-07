@@ -35,20 +35,19 @@ export default function WorkentryList({ workentries, setWorkentries, isDev, hand
             setLocalWorkentries([]);
             alert.show("Fehler beim Löschen des Zeiteintrags");
         }
-
-        function calculateDuration(t1, t2) {
-            let [hours, minutes] = t1.split(":");
-            let [hours2, minutes2] = t2.split(":");
-            hours = hours * 60;
-            let time1 = Number(hours) + Number(minutes);
-            hours2 = hours2 * 60;
-            let time2 = Number(hours2) + Number(minutes2);
-            let duration = time2 - time1;
-            let durationHours = Math.floor(duration / 60);
-            let durationMinutes = duration % 60;
-            durationMinutes = durationMinutes.toString().length < 2 ? `0${durationMinutes}` : durationMinutes;
-            return `${durationHours}:${durationMinutes} h`;
-        }
+    }
+    function calculateDuration(t1, t2) {
+        let [hours, minutes] = t1.split(":");
+        let [hours2, minutes2] = t2.split(":");
+        hours = hours * 60;
+        let time1 = Number(hours) + Number(minutes);
+        hours2 = hours2 * 60;
+        let time2 = Number(hours2) + Number(minutes2);
+        let duration = time2 - time1;
+        let durationHours = Math.floor(duration / 60);
+        let durationMinutes = duration % 60;
+        durationMinutes = durationMinutes.toString().length < 2 ? `0${durationMinutes}` : durationMinutes;
+        return `${durationHours}:${durationMinutes} h`;
     }
 
     return (
@@ -66,8 +65,8 @@ export default function WorkentryList({ workentries, setWorkentries, isDev, hand
             </Row>
             {workentries.map((w) => (
                 <Row key={w._id} className="align-items-center">
-                    <Col sm={2}>{w.category ? w.category.category : "Unbekannte Kategorie"}</Col>
                     <Col sm={2}>{w.project ? w.project.project : "Unbekanntes Projekt"}</Col>
+                    <Col sm={2}>{w.category ? w.category.category : "Unbekannte Kategorie"}</Col>
                     <Col sm={2}>{w.optionalText}</Col>
                     <Col sm={1}>{w.date.replaceAll("-", ".")}</Col>
                     <Col sm={1}>{w.start}</Col>

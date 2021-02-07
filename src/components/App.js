@@ -14,7 +14,8 @@ import WorkentryList from "./WorkentryList";
 const App = () => {
     const [workentries, setWorkentries] = useState([]);
     const [show, setShow] = useState(false);
-    let [isDev, setIsDev] = useState(process.env.NODE_ENV == "development");
+    // let [isDev, setIsDev] = useState(process.env.NODE_ENV == "development");
+    let [isDev, setIsDev] = useState(false);
     let [workentryToUpdate, setWorkentryToUpdate] = useState(null);
 
     const handleClose = () => setShow(false);
