@@ -44,7 +44,7 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
 
     function reset() {
         setMode("create");
-        endTrack();
+        stopTrack();
         setSelectedCategory(undefined);
         setSelectedProject(undefined);
         setOptionalText("");
@@ -109,7 +109,7 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
 
     function track() {
         if (isTracking) {
-            endTrack();
+            stopTrack();
         } else {
             startTrack();
         }
@@ -117,17 +117,17 @@ export default function Workentry({ show, handleClose, workentries, setWorkentri
 
     function startTrack() {
         setIsTracking(true);
-        setStartTime(moment().format("HH:mm"));
-        setStartTimeTmp(moment().format("HH:mm"));
-        setDate(moment().format("YYYY-MM-DD"));
+        !startTime && setStartTime(moment().format("HH:mm"));
+        !startTimeTmp && setStartTimeTmp(moment().format("HH:mm"));
+        !date && setDate(moment().format("YYYY-MM-DD"));
         let interval = setInterval(() => {
-            let now = new Date();
+            // let now = new Date();
             setEndTimeTmp(moment().format("HH:mm"));
             setEndTime(moment().format("HH:mm"));
         }, 1000);
         setCustomInterval(interval);
     }
-    function endTrack() {
+    function stopTrack() {
         setIsTracking(false);
         clearInterval(customInterval);
     }
